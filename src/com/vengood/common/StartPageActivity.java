@@ -1,6 +1,8 @@
 package com.vengood.common;
 
+import com.umeng.onlineconfig.OnlineConfigAgent;
 import com.vengood.R;
+import com.vengood.util.Utils;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -24,7 +26,7 @@ public class StartPageActivity extends Activity {
         @Override
         public void handleMessage(Message msg) {
             Intent intent = new Intent(mContext, MainActivity.class);
-            startActivity(intent);
+            Utils.toLeftAnim(mContext, intent, true);
             super.handleMessage(msg);
         }
     };
@@ -35,6 +37,7 @@ public class StartPageActivity extends Activity {
         mContext = this;
         setContentView(R.layout.start_page_activity);
         mHandler.sendEmptyMessageDelayed(1, 1 * 1000);
+        OnlineConfigAgent.getInstance().updateOnlineConfig(mContext);
     }
 
     @Override

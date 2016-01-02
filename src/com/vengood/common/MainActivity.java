@@ -4,13 +4,16 @@ import com.umeng.analytics.MobclickAgent;
 import com.umeng.onlineconfig.OnlineConfigAgent;
 import com.umeng.update.UmengUpdateAgent;
 import com.vengood.R;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 /**
  *类名：MainActivity.java
@@ -22,6 +25,7 @@ public class MainActivity extends Activity {
 	private final String mPageName = "MainActivity";
 	private Context mContext = null;
 	private WebView mWvContent = null;
+	private long mExitTime = 0;
 	
 	private boolean isLoadImageAuto = true;
     private boolean isJavaScriptEnabled = true;
@@ -40,7 +44,7 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-        OnlineConfigAgent.getInstance().updateOnlineConfig(mContext);
+        //OnlineConfigAgent.getInstance().updateOnlineConfig(mContext);
 		UmengUpdateAgent.update(this);
 		mContext = this;
 		initView();
@@ -107,4 +111,22 @@ public class MainActivity extends Activity {
         MobclickAgent.onPageEnd(mPageName);
         MobclickAgent.onPause(this);
     }
+    
+    @Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+			return doubleClickToExit();
+		}
+		return super.dispatchKeyEvent(event);
+	}
+    
+	private boolean doubleClickToExit() {
+		if ((System.currentTimeMillis() - mExitTime) > 2000) {
+			Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+			mExitTime = System.currentTimeMillis();
+		} else {
+			finish();
+		}
+		return true;
+	}
 }

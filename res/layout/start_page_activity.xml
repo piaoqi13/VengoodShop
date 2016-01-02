@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/ic_launcher" >
+    android:background="@drawable/start_page_picture" >
 
     <TextView
         android:layout_width="fill_parent"
@@ -11,7 +11,7 @@
         android:layout_marginBottom="5dp"
         android:gravity="center_horizontal"
         android:text="@string/company_right_text"
-        android:textColor="@color/company_right"
+        android:textColor="@color/white"
         android:textSize="13sp" />
 
 </LinearLayout>
