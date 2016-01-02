@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.vengood.R;
-import com.vengood.util.EasyLogger;
 import com.vengood.util.Utils;
 
 import android.annotation.SuppressLint;
@@ -33,7 +32,7 @@ public class GuidePageActivity extends Activity implements OnPageChangeListener 
 	private View mVSelectedPoint = null;
 	
 	private List<View> mViews = new ArrayList<View>();
-	private int mWidth = -1;
+	private int mWidth = 0;// 指示点间距离
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +71,10 @@ public class GuidePageActivity extends Activity implements OnPageChangeListener 
 			mLlPointView.addView(view);
 		}
 		// 初始化选中点
+		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(18, 18);
+		params.leftMargin = 15;
 		mVSelectedPoint.setBackgroundResource(R.drawable.vw_point_normal);
+		mVSelectedPoint.setLayoutParams(params);
 	}
 	
 	private void initListener() {
@@ -91,11 +93,7 @@ public class GuidePageActivity extends Activity implements OnPageChangeListener 
 
 	@Override
 	public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-		EasyLogger.i("CollinWang", "onPageScrolled is run");
-		EasyLogger.i("CollinWang", "width=" + mWidth);
-		if (mWidth == -1) {
-			mWidth = mLlPointView.getChildAt(1).getLeft() - mLlPointView.getChildAt(0).getLeft();
-		}
+		mWidth = mLlPointView.getChildAt(1).getLeft() - mLlPointView.getChildAt(0).getLeft();
 		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(18, 18);
 		params.leftMargin = (int) (position * mWidth + positionOffset * mWidth) + 15;
 		mVSelectedPoint.setBackgroundResource(R.drawable.vw_point_selected);

@@ -18,7 +18,7 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@android:style/Theme.Light.NoTitleBar" >
 
         <!-- 友盟统计引用CollinWang -->
         <meta-data
@@ -39,9 +39,20 @@
             android:name="com.umeng.update.UpdateDialogActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
+        <!-- 首页CollinWang -->
         <activity
             android:name=".common.MainActivity"
             android:label="@string/app_name" >
+        </activity>
+        <!-- 启动页CollinWang -->
+        <activity
+            android:name=".common.StartPageActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <!-- 引导页CollinWang -->
+        <activity
+            android:name=".common.GuidePageActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
