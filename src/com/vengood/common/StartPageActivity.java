@@ -2,6 +2,7 @@ package com.vengood.common;
 
 import com.umeng.onlineconfig.OnlineConfigAgent;
 import com.vengood.R;
+import com.vengood.util.Settings;
 import com.vengood.util.Utils;
 
 import android.annotation.SuppressLint;
@@ -25,9 +26,14 @@ public class StartPageActivity extends Activity {
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            Intent intent = new Intent(mContext, MainActivity.class);
-            Utils.toLeftAnim(mContext, intent, true);
-            super.handleMessage(msg);
+        	switch (msg.what) {
+			case 1:
+				Intent intent = new Intent(mContext, MainActivity.class);
+				Utils.toLeftAnim(mContext, intent, true);
+				break;
+			default:
+				break;
+			}
         }
     };
 
@@ -35,9 +41,16 @@ public class StartPageActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
-        setContentView(R.layout.start_page_activity);
-        mHandler.sendEmptyMessageDelayed(1, 1 * 1000);
         OnlineConfigAgent.getInstance().updateOnlineConfig(mContext);
+        boolean isFirstTime = Settings.getBoolean("is_first_time", true, true);
+        if (isFirstTime) {
+        	Intent intent = new Intent(mContext, GuidePageActivity.class);
+			Utils.toLeftAnim(mContext, intent, true);
+        	Settings.setBoolean("is_first_time", false, true);
+        } else {
+        	setContentView(R.layout.start_page_activity);
+        	mHandler.sendEmptyMessageDelayed(1, 1 * 1000);
+        }
     }
 
     @Override

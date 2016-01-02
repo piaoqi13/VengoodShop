@@ -3,6 +3,7 @@ package com.vengood.common;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.umeng.onlineconfig.OnlineConfigAgent;
 import com.vengood.R;
 import com.vengood.util.Utils;
 
@@ -39,6 +40,7 @@ public class GuidePageActivity extends Activity implements OnPageChangeListener 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.guide_page_activity);
 		mContext = this;
+		OnlineConfigAgent.getInstance().updateOnlineConfig(mContext);
 		initView();
 		initData();
 		initListener();
@@ -82,7 +84,7 @@ public class GuidePageActivity extends Activity implements OnPageChangeListener 
 	}
 
 	public void startExperiment(View view) {
-		Intent intent = new Intent(mContext, StartPageActivity.class);
+		Intent intent = new Intent(mContext, MainActivity.class);
         Utils.toLeftAnim(mContext, intent, true);
 	}
 	
