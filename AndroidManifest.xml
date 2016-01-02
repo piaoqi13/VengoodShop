@@ -47,6 +47,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- 启动页CollinWang -->
+        <activity
+            android:name=".common.StartPageActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <!-- 引导页CollinWang -->
+        <activity
+            android:name=".common.GuidePageActivity"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

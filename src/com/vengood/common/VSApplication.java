@@ -1,6 +1,8 @@
 package com.vengood.common;
 
 import com.umeng.analytics.MobclickAgent;
+import com.vengood.http.HttpClient;
+import com.vengood.util.Settings;
 
 import android.app.Application;
 import android.content.Context;
@@ -24,6 +26,11 @@ public class VSApplication extends Application {
 		super.onCreate();
 		mVSApplication = this;
         mContext = getApplicationContext();
+        // Software Storage
+        Settings.initPreferences(mContext);
+        // HTTP
+        HttpClient.getInstance().init(this);
+        // UMeng
 		MobclickAgent.openActivityDurationTrack(false);
         MobclickAgent.setCatchUncaughtExceptions(true);
 	};
