@@ -4,12 +4,17 @@ import com.umeng.analytics.MobclickAgent;
 import com.umeng.onlineconfig.OnlineConfigAgent;
 import com.umeng.update.UmengUpdateAgent;
 import com.vengood.R;
+import com.vengood.dialog.TipDialog;
+import com.vengood.util.Utils;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -21,9 +26,10 @@ import android.widget.Toast;
  *日期：2015年12月31日
  *作者：王超
  */
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements OnClickListener {
 	private final String mPageName = "MainActivity";
 	private Context mContext = null;
+	private TipDialog mTipDialog = null;
 	private WebView mWvContent = null;
 	private long mExitTime = 0;
 	
@@ -47,7 +53,6 @@ public class MainActivity extends Activity {
 		UmengUpdateAgent.update(this);
 		mContext = this;
 		initView();
-		initData();
 		initListener();
 	}
 	
@@ -76,10 +81,15 @@ public class MainActivity extends Activity {
         webSettings.setBuiltInZoomControls(true);
         webSettings.setSupportZoom(true);
 	}
-	
+		
     private void initData() {
         String url = OnlineConfigAgent.getInstance().getConfigParams(mContext, "url");
         mWvContent.loadUrl(url);
+        if (!Utils.isNetworkAvailable(mContext)) {
+        	mTipDialog = new TipDialog(mContext, "网络不通");
+        	mTipDialog.show();
+        	mTipDialog.setListener(this);
+        }
     }
 
     private void initListener() {
@@ -100,6 +110,7 @@ public class MainActivity extends Activity {
 	@Override
     protected void onResume() {
         super.onResume();
+        initData();// 考虑设置网络重获焦点
         MobclickAgent.onPageStart(mPageName);
         MobclickAgent.onResume(this);
     }
@@ -127,5 +138,20 @@ public class MainActivity extends Activity {
 			finish();
 		}
 		return true;
+	}
+
+	@Override
+	public void onClick(View view) {
+		switch (view.getId()) {
+		case R.id.tv_tip_confirm:
+			mTipDialog.dismiss();
+			Intent intent = new Intent("android.settings.WIRELESS_SETTINGS");
+            startActivity(intent);
+			break;
+		case R.id.tv_tip_cancel:
+			mTipDialog.dismiss();
+			finish();
+			break;
+		}
 	}
 }

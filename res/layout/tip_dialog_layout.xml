@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingLeft="40dp"
+    android:paddingRight="40dp" >
+
+    <TextView
+        android:id="@+id/tv_tip_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tip_dialog_top"
+        android:gravity="center"
+        android:paddingBottom="34dp"
+        android:paddingTop="34dp"
+        android:text="@string/tip_text"
+        android:textColor="@color/tip_dialog_pressed"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="0.6dp"
+        android:background="@drawable/tip_dialog_line" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tip_dialog_bottom"
+        android:gravity="bottom"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/tv_tip_confirm"
+            style="@style/tip_dialog_text_style"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="@string/confirm_text" />
+
+        <TextView
+            android:layout_width="1dip"
+            android:layout_height="match_parent"
+            android:background="@drawable/tip_dialog_line" />
+
+        <TextView
+            android:id="@+id/tv_tip_cancel"
+            style="@style/tip_dialog_text_style"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="@string/cancel_text" />
+    </LinearLayout>
+
+</LinearLayout>

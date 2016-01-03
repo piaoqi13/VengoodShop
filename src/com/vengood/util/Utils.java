@@ -5,6 +5,8 @@ import com.vengood.R;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 /**
  *类名：Utils.java
@@ -36,4 +38,20 @@ public class Utils {
         mActivity.finish();
         mActivity.overridePendingTransition(R.anim.left_to_current, R.anim.curent_to_right);
     }
+    
+    // 检查网络是否可用
+    public static boolean isNetworkAvailable(Context context) {
+		ConnectivityManager connectManage = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		if (connectManage != null) {
+			NetworkInfo[] info = connectManage.getAllNetworkInfo();
+			if (info != null) {
+				for (int i = 0; i < info.length; i++) {
+					if (info[i].getState() == NetworkInfo.State.CONNECTED) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
 }

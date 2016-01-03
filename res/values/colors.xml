@@ -3,4 +3,8 @@
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
     <color name="company_right">#999999</color>
+    
+    <color name="transparent">#00000000</color>
+    <color name="tip_dialog_normal">#333333</color>
+    <color name="tip_dialog_pressed">#6b6969</color>
 </resources>
