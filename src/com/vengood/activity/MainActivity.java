@@ -1,21 +1,28 @@
 package com.vengood.activity;
 
+import java.io.File;
+
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.onlineconfig.OnlineConfigAgent;
 import com.umeng.update.UmengUpdateAgent;
 import com.vengood.R;
 import com.vengood.dialog.TipDialog;
+import com.vengood.util.EasyLogger;
 import com.vengood.util.Utils;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
+import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -33,6 +40,9 @@ public class MainActivity extends Activity implements OnClickListener {
 	private WebView mWvContent = null;
 	private long mExitTime = 0;
 	
+	private ConnectivityManager mConnectManager = null;
+	private NetworkInfo mNetworkInfo = null;
+	
 	private boolean isLoadImageAuto = true;
     private boolean isJavaScriptEnabled = true;
     private boolean isJavaScriptCanOpenWindowAuto = false;
@@ -45,6 +55,8 @@ public class MainActivity extends Activity implements OnClickListener {
     private int minimumLogicalFontSize = 8;
     private int defaultFontSize = 16;
     private int defaultFixedFontSize = 13;
+    
+    private String mCacheDatabase = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +71,8 @@ public class MainActivity extends Activity implements OnClickListener {
 	@SuppressWarnings("deprecation")
 	@SuppressLint("SetJavaScriptEnabled")
 	private void initView() {
+		mConnectManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+		mNetworkInfo = mConnectManager.getActiveNetworkInfo();
 		mWvContent = (WebView) findViewById(R.id.wv_content);
         WebSettings webSettings = mWvContent.getSettings();
         webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
@@ -80,16 +94,58 @@ public class MainActivity extends Activity implements OnClickListener {
         webSettings.setSupportMultipleWindows(true);
         webSettings.setBuiltInZoomControls(true);
         webSettings.setSupportZoom(true);
+		// 缓存CollinWang2016.01.03
+		webSettings.setDomStorageEnabled(true);
+		webSettings.setAppCacheEnabled(true);
+		webSettings.setAppCacheMaxSize(5 * 1024 * 1024);
+		String cache = mContext.getDir("cache", Context.MODE_PRIVATE).getPath() + "/webcache";
+		EasyLogger.i("CollinWang", "cache=" + cache);
+		webSettings.setAppCachePath(cache);
+		webSettings.setAllowFileAccess(true);
+		mWvContent.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+		if (Utils.isNetworkAvailable(mContext)) {
+			if (mNetworkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
+				webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+				EasyLogger.i("CollinWang", "移动网络");
+			} else {
+				webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+				EasyLogger.i("CollinWang", "wifi网络");
+			}
+		} else {
+			webSettings.setCacheMode(WebSettings.LOAD_CACHE_ONLY);
+			EasyLogger.i("CollinWang", "没有网络");
+		}
+
+		webSettings.setDatabaseEnabled(true);
+		mCacheDatabase = mContext.getDir("database", Context.MODE_PRIVATE).getPath();
+		EasyLogger.i("CollinWang", "database=" + mCacheDatabase);
+		webSettings.setDatabasePath(mCacheDatabase);
+		mWvContent.setWebChromeClient(mChromeClient);
 	}
-		
+	
+	private WebChromeClient mChromeClient = new WebChromeClient() {
+		@SuppressWarnings("deprecation")
+		@Override
+		public void onReachedMaxAppCacheSize(long spaceNeeded, long totalUsedQuota, WebStorage.QuotaUpdater quotaUpdater) {
+			quotaUpdater.updateQuota(spaceNeeded * 6);
+		}
+	};
+	
     private void initData() {
-        String url = OnlineConfigAgent.getInstance().getConfigParams(mContext, "url");
-        mWvContent.loadUrl(url);
+        /*File file = new File(mCacheDatabase);
+        if (file.exists()) {
+        	file.delete();
+        }*/
         if (!Utils.isNetworkAvailable(mContext)) {
         	mTipDialog = new TipDialog(mContext, "网络不通");
         	mTipDialog.show();
         	mTipDialog.setListener(this);
+        } else {
+        	clearWebViewCache();
         }
+        // 加载网页
+        String url = OnlineConfigAgent.getInstance().getConfigParams(mContext, "url");
+        mWvContent.loadUrl(url);
     }
 
     private void initListener() {
@@ -154,4 +210,44 @@ public class MainActivity extends Activity implements OnClickListener {
 			break;
 		}
 	}
+	
+	private void clearWebViewCache() {
+		try {
+			deleteDatabase("webview.db");
+			deleteDatabase("webviewCache.db");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		// WebView 缓存文件
+		File appCacheDir = new File(getFilesDir().getAbsolutePath() + "/webcache");
+		EasyLogger.i("CollinWang", "appCacheDir path=" + appCacheDir.getAbsolutePath());
+
+		File wbCacheDir = new File(getCacheDir().getAbsolutePath() + "/webviewCache");
+		EasyLogger.i("CollinWang", "webviewCacheDir path=" + wbCacheDir.getAbsolutePath());
+
+		if (wbCacheDir.exists()) {
+			deleteFile(wbCacheDir);
+		}
+		if (appCacheDir.exists()) {
+			deleteFile(appCacheDir);
+		}
+	}
+	
+	private void deleteFile(File file) {
+		if (file.exists()) {
+			if (file.isFile()) {
+				file.delete();
+			} else if (file.isDirectory()) {
+				File files[] = file.listFiles();
+				for (int i = 0; i < files.length; i++) {
+					deleteFile(files[i]);
+				}
+			}
+			boolean isOk = file.delete();
+			EasyLogger.i("CollinWang", "isOk=" + isOk);
+		} else {
+			EasyLogger.i("CollinWang", "no file" + file.getAbsolutePath());
+		}
+	}
+
 }
