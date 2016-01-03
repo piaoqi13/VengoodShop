@@ -1,5 +1,18 @@
 package com.vengood.http.manage;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.google.gson.Gson;
+import com.vengood.http.HttpClient;
+import com.vengood.http.HttpEvent;
+import com.vengood.http.HttpParam;
+import com.vengood.http.HttpReqListener;
+import com.vengood.http.HttpUrl;
+import com.vengood.model.LoginInfo;
+
+import android.util.Log;
+
 /**
  *类名：NetWorkUtil.java
  *注释：网络请求工具类
@@ -7,5 +20,29 @@ package com.vengood.http.manage;
  *作者：王超
  */
 public class NetWorkUtil {
-	
+	public static void login(final HttpReqListener listener, String name, String password) {
+        HttpClient.getInstance().doWork(HttpUrl.getLoginUrl(), HttpParam.getLoginParam(name, password), new HttpClient.HttpCallBack() {
+            @Override
+            public void succeed(int statusCode, String content) {
+                try {
+                    JSONObject jsonObject = new JSONObject(content);
+                    if (jsonObject.optInt("code") != 200) {
+                        listener.onUpdate(HttpEvent.EVENT_LOGIN_FAIL, jsonObject.optString("msg"));
+                        return;
+                    }
+                    Gson gson = new Gson();
+                    Object obj = gson.fromJson(jsonObject.toString(), LoginInfo.class);
+                    listener.onUpdate(HttpEvent.EVENT_LOGIN_SUCCESS, obj);
+                } catch (JSONException e) {
+                    Log.e("NetWorkUtil", "loginJsonCatch=", e);
+                    listener.onUpdate(HttpEvent.EVENT_LOGIN_FAIL, e.toString());
+                }
+            }
+            
+            @Override
+            public void failed(Throwable error, String content) {
+                listener.onUpdate(HttpEvent.EVENT_LOGIN_FAIL, content);
+            }
+        });
+    }
 }

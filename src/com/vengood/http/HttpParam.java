@@ -9,9 +9,10 @@ import com.loopj.android.http.RequestParams;
  *作者：王超
  */
 public class HttpParam {
-    public static RequestParams getLoginParams(String bodyId) {
+    public static RequestParams getLoginParam(String name, String password) {
         RequestParams params = new RequestParams();
-        params.put("bodyId", bodyId);
+        params.put("name", name);
+        params.put("password", password);
         return params;
     }
 }
