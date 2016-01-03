@@ -145,6 +145,7 @@ public class MainActivity extends Activity implements OnClickListener {
         }
         // 加载网页
         String url = OnlineConfigAgent.getInstance().getConfigParams(mContext, "url");
+        EasyLogger.i("CollinWang", "url=" + url);
         mWvContent.loadUrl(url);
     }
 
