@@ -1,4 +1,4 @@
-package com.vengood.common;
+package com.vengood.adapter;
 
 import java.util.List;
 

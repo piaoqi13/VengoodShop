@@ -1,4 +1,4 @@
-package com.vengood.common;
+package com.vengood.activity;
 
 import com.umeng.onlineconfig.OnlineConfigAgent;
 import com.vengood.R;

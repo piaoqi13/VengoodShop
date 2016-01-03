@@ -1,4 +1,4 @@
-package com.vengood.common;
+package com.vengood.application;
 
 import com.umeng.analytics.MobclickAgent;
 import com.vengood.http.HttpClient;

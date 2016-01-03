@@ -1,10 +1,11 @@
-package com.vengood.common;
+package com.vengood.activity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.umeng.onlineconfig.OnlineConfigAgent;
 import com.vengood.R;
+import com.vengood.adapter.ViewPagerAdapter;
 import com.vengood.util.Utils;
 
 import android.annotation.SuppressLint;
