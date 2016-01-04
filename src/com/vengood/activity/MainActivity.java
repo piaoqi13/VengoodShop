@@ -132,10 +132,6 @@ public class MainActivity extends Activity implements OnClickListener {
 	};
 	
     private void initData() {
-        /*File file = new File(mCacheDatabase);
-        if (file.exists()) {
-        	file.delete();
-        }*/
         if (!Utils.isNetworkAvailable(mContext)) {
         	mTipDialog = new TipDialog(mContext, "网络不通");
         	mTipDialog.show();
