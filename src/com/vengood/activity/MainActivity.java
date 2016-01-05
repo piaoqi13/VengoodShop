@@ -2,6 +2,9 @@ package com.vengood.activity;
 
 import java.io.File;
 
+import com.tencent.mm.sdk.modelpay.PayReq;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.onlineconfig.OnlineConfigAgent;
 import com.umeng.update.UmengUpdateAgent;
@@ -57,12 +60,16 @@ public class MainActivity extends Activity implements OnClickListener {
     private int defaultFixedFontSize = 13;
     
     private String mCacheDatabase = null;
+    
+    private IWXAPI mIWXapi = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		UmengUpdateAgent.update(this);
+		mIWXapi = WXAPIFactory.createWXAPI(this, "wxb4ba3c02aa476ea1");
+		//mIWXapi.registerApp("wxb4ba3c02aa476ea1");
 		mContext = this;
 		initView();
 		initListener();
@@ -160,6 +167,11 @@ public class MainActivity extends Activity implements OnClickListener {
         });
     }
 	
+    public void reqWinXinPay() {
+    	PayReq req = new PayReq();
+    	mIWXapi.sendReq(req);
+    }
+    
 	@Override
     protected void onResume() {
         super.onResume();
