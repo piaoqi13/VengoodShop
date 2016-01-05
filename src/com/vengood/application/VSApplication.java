@@ -14,8 +14,9 @@ import android.content.Context;
  *作者：王超
  */
 public class VSApplication extends Application {
-	public static Context mContext = null;
-    private static VSApplication mVSApplication = null;
+	private static VSApplication mVSApplication = null;
+	public Context mContext = null;
+	public String mLocation = null;
 	
     public static VSApplication getInstance() {
         return mVSApplication;

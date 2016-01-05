@@ -10,6 +10,7 @@ import com.umeng.onlineconfig.OnlineConfigAgent;
 import com.umeng.update.UmengUpdateAgent;
 import com.vengood.R;
 import com.vengood.dialog.TipDialog;
+import com.vengood.util.AMapLocationUtil;
 import com.vengood.util.EasyLogger;
 import com.vengood.util.Utils;
 
@@ -66,11 +67,12 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mContext = this;
 		setContentView(R.layout.activity_main);
 		UmengUpdateAgent.update(this);
 		mIWXapi = WXAPIFactory.createWXAPI(this, "wxb4ba3c02aa476ea1");
 		//mIWXapi.registerApp("wxb4ba3c02aa476ea1");
-		mContext = this;
+		AMapLocationUtil.getSingleInstance().startLocation(mContext);
 		initView();
 		initListener();
 	}
@@ -185,6 +187,12 @@ public class MainActivity extends Activity implements OnClickListener {
         super.onPause();
         MobclickAgent.onPageEnd(mPageName);
         MobclickAgent.onPause(this);
+    }
+    
+    @Override
+    protected void onDestroy() {
+    	super.onDestroy();
+    	AMapLocationUtil.getSingleInstance().stopLocation();
     }
     
     @Override
