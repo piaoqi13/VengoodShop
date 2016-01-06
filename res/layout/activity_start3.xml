@@ -9,10 +9,8 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="80dp"
-        android:onClick="startExperiment"
-        android:text="@string/start_experiment_text"
-        android:textColor="@color/black"
-        android:textSize="14sp" />
+        android:layout_marginBottom="45dp"
+        android:background="@drawable/start_experiment"
+        android:onClick="startExperiment" />
 
 </LinearLayout>
