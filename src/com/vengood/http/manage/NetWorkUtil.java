@@ -18,8 +18,8 @@ import android.util.Log;
  *作者：王超
  */
 public class NetWorkUtil {
-	public static void login(final HttpReqListener listener, String name, String password) {
-        HttpClient.getInstance().doWork(HttpUrl.getLoginUrl(), HttpParam.getLoginParam(name, password), new HttpClient.HttpCallBack() {
+	public static void login(final HttpReqListener listener, final String account, final String password) {
+        HttpClient.getInstance().doWork(HttpUrl.getLoginUrl(), HttpParam.getLoginParam(account, password), new HttpClient.HttpCallBack() {
             @Override
             public void succeed(int statusCode, String content) {
                 try {

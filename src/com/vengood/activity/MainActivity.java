@@ -15,6 +15,7 @@ import com.vengood.http.HttpReqListener;
 import com.vengood.http.manage.NetWorkUtil;
 import com.vengood.util.AMapLocationUtil;
 import com.vengood.util.EasyLogger;
+import com.vengood.util.Settings;
 import com.vengood.util.Utils;
 
 import android.annotation.SuppressLint;
@@ -77,8 +78,8 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 		//mIWXapi.registerApp("wxb4ba3c02aa476ea1");
 		AMapLocationUtil.getSingleInstance().startLocation(mContext);
 		initView();
+		autoLogin();
 		initListener();
-		NetWorkUtil.login(this, "13723772347", "111111");
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -144,6 +145,16 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 		}
 	};
 	
+	private void autoLogin() {
+		String account = Settings.getString("account", "", true);
+		String pwd = Settings.getString("pwd", "", true);
+		if (!account.equals("") && !pwd.equals("")) {
+			NetWorkUtil.login(this, account, pwd);
+		} else {
+			EasyLogger.i("CollinWang", "autoLogin is not run");
+		}
+	}
+	
     private void initData() {
         if (!Utils.isNetworkAvailable(mContext)) {
         	mTipDialog = new TipDialog(mContext, "网络不通");
@@ -173,9 +184,16 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
         });
     }
 	
+    // 给JS调用
     public void reqWinXinPay() {
     	PayReq req = new PayReq();
     	mIWXapi.sendReq(req);
+    }
+    
+    // 给JS调用
+    public void saveLoginInfo(String account, String pwd) {
+    	Settings.setString("account", account, true);
+    	Settings.setString("pwd", pwd, true);
     }
     
 	@Override
