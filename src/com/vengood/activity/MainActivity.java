@@ -10,6 +10,9 @@ import com.umeng.onlineconfig.OnlineConfigAgent;
 import com.umeng.update.UmengUpdateAgent;
 import com.vengood.R;
 import com.vengood.dialog.TipDialog;
+import com.vengood.http.HttpEvent;
+import com.vengood.http.HttpReqListener;
+import com.vengood.http.manage.NetWorkUtil;
 import com.vengood.util.AMapLocationUtil;
 import com.vengood.util.EasyLogger;
 import com.vengood.util.Utils;
@@ -37,7 +40,7 @@ import android.widget.Toast;
  *日期：2015年12月31日
  *作者：王超
  */
-public class MainActivity extends Activity implements OnClickListener {
+public class MainActivity extends Activity implements OnClickListener, HttpReqListener {
 	private final String mPageName = "MainActivity";
 	private Context mContext = null;
 	private TipDialog mTipDialog = null;
@@ -75,6 +78,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		AMapLocationUtil.getSingleInstance().startLocation(mContext);
 		initView();
 		initListener();
+		NetWorkUtil.login(this, "13723772347", "111111");
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -264,6 +268,19 @@ public class MainActivity extends Activity implements OnClickListener {
 			EasyLogger.i("CollinWang", "isOk=" + isOk);
 		} else {
 			EasyLogger.i("CollinWang", "no file" + file.getAbsolutePath());
+		}
+	}
+
+	@Override
+	public void onUpdate(HttpEvent event, Object obj) {
+		switch (event) {
+		case EVENT_LOGIN_SUCCESS:
+			EasyLogger.i("CollinWang", "login succeed");
+			break;
+		case EVENT_LOGIN_FAIL:
+			String tip = (String)obj;
+			EasyLogger.i("CollinWang", "login failed=" + tip);
+			break;
 		}
 	}
 

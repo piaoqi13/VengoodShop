@@ -3,13 +3,11 @@ package com.vengood.http.manage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.gson.Gson;
 import com.vengood.http.HttpClient;
 import com.vengood.http.HttpEvent;
 import com.vengood.http.HttpParam;
 import com.vengood.http.HttpReqListener;
 import com.vengood.http.HttpUrl;
-import com.vengood.model.LoginInfo;
 
 import android.util.Log;
 
@@ -26,13 +24,20 @@ public class NetWorkUtil {
             public void succeed(int statusCode, String content) {
                 try {
                     JSONObject jsonObject = new JSONObject(content);
-                    if (jsonObject.optInt("code") != 200) {
-                        listener.onUpdate(HttpEvent.EVENT_LOGIN_FAIL, jsonObject.optString("msg"));
-                        return;
+                    String flag = jsonObject.optString("status");
+                    String tip = null;
+                    if (flag.equals("1")) {
+                        listener.onUpdate(HttpEvent.EVENT_LOGIN_SUCCESS, null);
+                    } else {
+                    	if (flag.equals("-1")) {
+                    		tip = "账号为空";
+                    	} else if (flag.equals("-2")) {
+                    		tip = "密码为空";
+                    	} else if (flag.equals("-3")) {
+                    		tip = "账号或密码错误";
+                    	}
+                    	listener.onUpdate(HttpEvent.EVENT_LOGIN_FAIL, tip);
                     }
-                    Gson gson = new Gson();
-                    Object obj = gson.fromJson(jsonObject.toString(), LoginInfo.class);
-                    listener.onUpdate(HttpEvent.EVENT_LOGIN_SUCCESS, obj);
                 } catch (JSONException e) {
                     Log.e("NetWorkUtil", "loginJsonCatch=", e);
                     listener.onUpdate(HttpEvent.EVENT_LOGIN_FAIL, e.toString());

@@ -7,8 +7,8 @@ package com.vengood.http;
  *作者：王超
  */
 public class HttpUrl {
-	public static String Server_Uri = "http://www.baidu.com/vengood";
-    public static String Login_Url = "login";
+	public static String Server_Uri = "http://test.vengood.com/";
+    public static String Login_Url = "mobile.php";
 
     public static String getLoginUrl() {
         return Server_Uri + Login_Url;
