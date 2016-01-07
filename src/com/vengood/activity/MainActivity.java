@@ -25,9 +25,11 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebStorage;
@@ -108,6 +110,8 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
         webSettings.setSupportMultipleWindows(true);
         webSettings.setBuiltInZoomControls(true);
         webSettings.setSupportZoom(true);
+        // JS交互CollinWang2016.01.07
+        mWvContent.addJavascriptInterface(new WebViewUtil(), "login");
 		// 缓存CollinWang2016.01.03
 		webSettings.setDomStorageEnabled(true);
 		webSettings.setAppCacheEnabled(true);
@@ -183,18 +187,22 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
             }
         });
     }
-	
-    // 给JS调用
-    public void reqWinXinPay() {
-    	PayReq req = new PayReq();
-    	mIWXapi.sendReq(req);
-    }
-    
-    // 给JS调用
-    public void saveLoginInfo(String account, String pwd) {
-    	Settings.setString("account", account, true);
-    	Settings.setString("pwd", pwd, true);
-    }
+	// JS交互
+    public final class WebViewUtil {
+		@JavascriptInterface
+		public void saveLoginInfo(String account, String pwd){
+			Log.i("CollinWang","account=" + account + "；password=" + pwd);
+			Settings.setString("account", account, true);
+	    	Settings.setString("pwd", pwd, true);
+			mWvContent.loadUrl("javascript: saveInfo()");  
+		}
+		
+		@JavascriptInterface
+	    public void reqWinXinPay() {
+	    	PayReq req = new PayReq();
+	    	mIWXapi.sendReq(req);
+	    }
+	}
     
 	@Override
     protected void onResume() {
