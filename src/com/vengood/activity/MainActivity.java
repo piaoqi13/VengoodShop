@@ -67,8 +67,8 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
     private int defaultFixedFontSize = 13;
     
     private String mCacheDatabase = null;
-    
     private IWXAPI mIWXapi = null;
+    private String mCachePath = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -111,14 +111,15 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
         webSettings.setBuiltInZoomControls(true);
         webSettings.setSupportZoom(true);
         // JS交互CollinWang2016.01.07
-        mWvContent.addJavascriptInterface(new WebViewUtil(), "login");
+        webSettings.setUserAgentString("vengood_app_android"); //webSettings.getUserAgentString() + 
+        mWvContent.addJavascriptInterface(new WebViewUtil(), "loginAndroid");
 		// 缓存CollinWang2016.01.03
 		webSettings.setDomStorageEnabled(true);
 		webSettings.setAppCacheEnabled(true);
 		webSettings.setAppCacheMaxSize(5 * 1024 * 1024);
-		String cache = mContext.getDir("cache", Context.MODE_PRIVATE).getPath() + "/webcache";
-		EasyLogger.i("CollinWang", "cache=" + cache);
-		webSettings.setAppCachePath(cache);
+		mCachePath = mContext.getDir("cache", Context.MODE_PRIVATE).getPath() + "/webcache";
+		EasyLogger.i("CollinWang", "cache=" + mCachePath);
+		webSettings.setAppCachePath(mCachePath);
 		webSettings.setAllowFileAccess(true);
 		mWvContent.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
 		if (Utils.isNetworkAvailable(mContext)) {
@@ -145,7 +146,7 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 		@SuppressWarnings("deprecation")
 		@Override
 		public void onReachedMaxAppCacheSize(long spaceNeeded, long totalUsedQuota, WebStorage.QuotaUpdater quotaUpdater) {
-			quotaUpdater.updateQuota(spaceNeeded * 6);
+			quotaUpdater.updateQuota(spaceNeeded * 4);
 		}
 	};
 	
@@ -160,23 +161,38 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 	}
 	
     private void initData() {
-        if (!Utils.isNetworkAvailable(mContext)) {
+        File file = new File(mCachePath);
+		Log.i("CollinWang", "缓存文件有没有=" + file.exists());
+		Log.i("CollinWang", "lastModifiedTime=" + file.lastModified());
+		Log.i("CollinWang", "CurrentTime=" + System.currentTimeMillis());
+		if ((file.lastModified() + 2*60*60*1000) < System.currentTimeMillis()) {
+			// 清空缓存
+			clearCacheFolder(file);
+			// 不使用缓存
+			mWvContent.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+			Log.i("CollinWang", "不使用缓存！");
+		} else {
+			// 使用缓存
+			mWvContent.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+			Log.i("CollinWang", "使用缓存！");
+		}
+        
+        // 加载网页
+        String url = OnlineConfigAgent.getInstance().getConfigParams(mContext, "url");
+        mWvContent.loadUrl(url);
+        
+        if (!Utils.isNetworkAvailable(mContext) && !file.exists()) {
         	mTipDialog = new TipDialog(mContext, "网络不通");
         	mTipDialog.show();
         	mTipDialog.setListener(this);
-        } else {
-        	clearWebViewCache();
-        }
-        // 加载网页
-        String url = OnlineConfigAgent.getInstance().getConfigParams(mContext, "url");
-        EasyLogger.i("CollinWang", "url=" + url);
-        mWvContent.loadUrl(url);
+        } 
     }
 
     private void initListener() {
     	mWvContent.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
+            	EasyLogger.i("CollinWang", "Url=" + url);
                 super.onPageFinished(view, url);
             }
 
@@ -190,11 +206,10 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 	// JS交互
     public final class WebViewUtil {
 		@JavascriptInterface
-		public void saveLoginInfo(String account, String pwd){
+		public void saveLoginInfo(String account, String pwd) {
 			Log.i("CollinWang","account=" + account + "；password=" + pwd);
 			Settings.setString("account", account, true);
 	    	Settings.setString("pwd", pwd, true);
-			mWvContent.loadUrl("javascript: saveInfo()");  
 		}
 		
 		@JavascriptInterface
@@ -257,45 +272,6 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 			break;
 		}
 	}
-	
-	private void clearWebViewCache() {
-		try {
-			deleteDatabase("webview.db");
-			deleteDatabase("webviewCache.db");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		// WebView 缓存文件
-		File appCacheDir = new File(getFilesDir().getAbsolutePath() + "/webcache");
-		EasyLogger.i("CollinWang", "appCacheDir path=" + appCacheDir.getAbsolutePath());
-
-		File wbCacheDir = new File(getCacheDir().getAbsolutePath() + "/webviewCache");
-		EasyLogger.i("CollinWang", "webviewCacheDir path=" + wbCacheDir.getAbsolutePath());
-
-		if (wbCacheDir.exists()) {
-			deleteFile(wbCacheDir);
-		}
-		if (appCacheDir.exists()) {
-			deleteFile(appCacheDir);
-		}
-	}
-	
-	private void deleteFile(File file) {
-		if (file.exists()) {
-			if (file.isFile()) {
-				file.delete();
-			} else if (file.isDirectory()) {
-				File files[] = file.listFiles();
-				for (int i = 0; i < files.length; i++) {
-					deleteFile(files[i]);
-				}
-			}
-			boolean isOk = file.delete();
-			EasyLogger.i("CollinWang", "isOk=" + isOk);
-		} else {
-			EasyLogger.i("CollinWang", "no file" + file.getAbsolutePath());
-		}
-	}
 
 	@Override
 	public void onUpdate(HttpEvent event, Object obj) {
@@ -310,4 +286,24 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 		}
 	}
 
+	private int clearCacheFolder(File dir) {
+		int deletedFiles = 0;
+		if (dir != null && dir.isDirectory()) {
+			try {
+				for (File child : dir.listFiles()) {
+					if (child.isDirectory()) {
+						deletedFiles += clearCacheFolder(child);
+					}
+					if (child.delete()) {
+						Log.i("CollinWang", "delete缓存！");
+						deletedFiles++;
+					}
+				}
+			} catch (Exception e) {
+				Log.i("CollinWang", "Catch=", e);
+			}
+		}
+		return deletedFiles;
+	}
+	
 }
