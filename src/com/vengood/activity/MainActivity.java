@@ -76,7 +76,7 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 		mContext = this;
 		setContentView(R.layout.activity_main);
 		UmengUpdateAgent.update(this);
-		mIWXapi = WXAPIFactory.createWXAPI(this, "wxb4ba3c02aa476ea1");
+		mIWXapi = WXAPIFactory.createWXAPI(this, "wxf23aead2d4526c3a");
 		//mIWXapi.registerApp("wxb4ba3c02aa476ea1");
 		AMapLocationUtil.getSingleInstance().startLocation(mContext);
 		initView();
