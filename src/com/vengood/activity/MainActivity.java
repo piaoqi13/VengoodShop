@@ -163,18 +163,22 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
     private void initData() {
         File file = new File(mCachePath);
 		Log.i("CollinWang", "缓存文件有没有=" + file.exists());
-		Log.i("CollinWang", "lastModifiedTime=" + file.lastModified());
-		Log.i("CollinWang", "CurrentTime=" + System.currentTimeMillis());
-		if ((file.lastModified() + 2*60*60*1000) < System.currentTimeMillis()) {
+		if (Utils.isNetworkAvailable(mContext)) {//file.lastModified() + 2*60*60*1000) < System.currentTimeMillis()
 			// 清空缓存
 			clearCacheFolder(file);
 			// 不使用缓存
-			mWvContent.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+			mWvContent.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
 			Log.i("CollinWang", "不使用缓存！");
 		} else {
-			// 使用缓存
-			mWvContent.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-			Log.i("CollinWang", "使用缓存！");
+			if (!file.exists()) {
+				mTipDialog = new TipDialog(mContext, "网络不通");
+	        	mTipDialog.show();
+	        	mTipDialog.setListener(this);
+			} else {
+				// 使用缓存
+				mWvContent.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+				Log.i("CollinWang", "使用缓存！");
+			}
 		}
         
         // 加载网页
@@ -182,11 +186,11 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
         Log.i("CollinWang", "online param=" + url);
         mWvContent.loadUrl(url.equals("") ? url="http://v.vengood.com/mobile.php?act=module&dzdid=0&name=bj_qmxk&do=list&weid=3" : url);
         
-        if (!Utils.isNetworkAvailable(mContext) && !file.exists()) {
+        /*if (!Utils.isNetworkAvailable(mContext)) {
         	mTipDialog = new TipDialog(mContext, "网络不通");
         	mTipDialog.show();
         	mTipDialog.setListener(this);
-        } 
+        } */
     }
 
     private void initListener() {
