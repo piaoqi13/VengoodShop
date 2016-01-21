@@ -162,10 +162,12 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 	
     private void initData() {
         File file = new File(mCachePath);
+        File file2 = new File(mCacheDatabase);
 		Log.i("CollinWang", "缓存文件有没有=" + file.exists());
 		if (Utils.isNetworkAvailable(mContext)) {//file.lastModified() + 2*60*60*1000) < System.currentTimeMillis()
 			// 清空缓存
 			clearCacheFolder(file);
+			clearCacheFolder(file2);
 			// 不使用缓存
 			mWvContent.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
 			Log.i("CollinWang", "不使用缓存！");
@@ -184,13 +186,7 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
         // 加载网页
         String url = OnlineConfigAgent.getInstance().getConfigParams(mContext, "url");
         Log.i("CollinWang", "online param=" + url);
-        mWvContent.loadUrl(url.equals("") ? url="http://v.vengood.com/mobile.php?act=module&dzdid=0&name=bj_qmxk&do=list&weid=3" : url);
-        
-        /*if (!Utils.isNetworkAvailable(mContext)) {
-        	mTipDialog = new TipDialog(mContext, "网络不通");
-        	mTipDialog.show();
-        	mTipDialog.setListener(this);
-        } */
+        mWvContent.loadUrl(url.equals("") ? url="http://v.vengood.com/mobile.php?act=module&dzdid=0&name=bj_qmxk&do=list&weid=3" : "http://www.szzfgjj.com/");
     }
 
     private void initListener() {
@@ -300,7 +296,7 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 						deletedFiles += clearCacheFolder(child);
 					}
 					if (child.delete()) {
-						Log.i("CollinWang", "delete缓存！");
+						Log.i("CollinWang", "delete缓存" + deletedFiles);
 						deletedFiles++;
 					}
 				}
