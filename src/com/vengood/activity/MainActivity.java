@@ -117,7 +117,7 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 		webSettings.setDomStorageEnabled(true);
 		webSettings.setAppCacheEnabled(true);
 		webSettings.setAppCacheMaxSize(5 * 1024 * 1024);
-		mCachePath = mContext.getDir("cache", Context.MODE_PRIVATE).getPath() + "/webcache";
+		mCachePath = mContext.getDir("cache", Context.MODE_PRIVATE).getPath();
 		EasyLogger.i("CollinWang", "cache=" + mCachePath);
 		webSettings.setAppCachePath(mCachePath);
 		webSettings.setAllowFileAccess(true);
@@ -146,7 +146,7 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 		@SuppressWarnings("deprecation")
 		@Override
 		public void onReachedMaxAppCacheSize(long spaceNeeded, long totalUsedQuota, WebStorage.QuotaUpdater quotaUpdater) {
-			quotaUpdater.updateQuota(spaceNeeded * 4);
+			quotaUpdater.updateQuota(spaceNeeded * 2);
 		}
 	};
 	
