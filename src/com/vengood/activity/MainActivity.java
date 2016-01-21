@@ -179,7 +179,8 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
         
         // 加载网页
         String url = OnlineConfigAgent.getInstance().getConfigParams(mContext, "url");
-        mWvContent.loadUrl(url);
+        Log.i("CollinWang", "online param=" + url);
+        mWvContent.loadUrl(url.equals("") ? url="http://v.vengood.com/mobile.php?act=module&dzdid=0&name=bj_qmxk&do=list&weid=3" : url);
         
         if (!Utils.isNetworkAvailable(mContext) && !file.exists()) {
         	mTipDialog = new TipDialog(mContext, "网络不通");
