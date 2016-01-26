@@ -60,6 +60,11 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:scheme="wxf23aead2d4526c3a"/>
+            </intent-filter>
         </activity>
         <!-- 引导页 -->
         <activity
@@ -67,7 +72,12 @@
             android:screenOrientation="portrait" >
         </activity>
         <!-- 高德定位 -->
-        <service android:name="com.amap.api.location.APSService"></service>
+        <service android:name="com.amap.api.location.APSService" />
+        <!-- 微信结果 -->
+        <activity
+            android:name="net.sourceforge.simcpux.wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop" />
     </application>
 
 </manifest>
