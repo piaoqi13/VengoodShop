@@ -47,8 +47,8 @@ public class AMapLocationUtil implements AMapLocationListener {
 	public void onLocationChanged(AMapLocation location) {
 		if (location != null) {
 			VSApplication.getInstance().mLocation = location.getAddress();
-			//EasyLogger.i("CollinWang", "location=" + VSApplication.getInstance().mLocation);
-			EasyLogger.i("CollinWang", "location=" +location.toString());
+			EasyLogger.i("CollinWang", "location=" + VSApplication.getInstance().mLocation);
+			//EasyLogger.i("CollinWang", "location=" +location.toString());
 		} else {
 			EasyLogger.i("CollinWang", "location=null");
 		}

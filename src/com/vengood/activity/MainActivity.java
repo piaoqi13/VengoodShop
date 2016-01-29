@@ -77,7 +77,8 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 		mContext = this;
 		setContentView(R.layout.activity_main);
 		UmengUpdateAgent.update(this);
-		mIWXapi = WXAPIFactory.createWXAPI(this, Constants.APP_ID);
+		mIWXapi = WXAPIFactory.createWXAPI(this, null);
+		mIWXapi.registerApp(Constants.APP_ID);
 		AMapLocationUtil.getSingleInstance().startLocation(mContext);
 		initView();
 		autoLogin();
@@ -215,6 +216,13 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 		
 		@JavascriptInterface
 	    public void reqWinXinPay(String param01, String param02, String param03, String param04, String param05, String param06, String param07) {
+			EasyLogger.i("CollinWang", "appId=" + param01);
+			EasyLogger.i("CollinWang", "partnerId=" + param02);
+			EasyLogger.i("CollinWang", "prepayId=" + param03);
+			EasyLogger.i("CollinWang", "nonceStr=" + param04);
+			EasyLogger.i("CollinWang", "timeStamp=" + param05);
+			EasyLogger.i("CollinWang", "packageValue=" + param06);
+			EasyLogger.i("CollinWang", "sign=" + param07);
 			PayReq req = new PayReq();
 			req.appId = param01;
 			req.partnerId = param02;
@@ -224,13 +232,6 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 			req.packageValue = param06;
 			req.sign = param07;
 	    	mIWXapi.sendReq(req);
-	    	EasyLogger.i("CollinWang", "param01=" + param01);
-	    	EasyLogger.i("CollinWang", "param02=" + param02);
-	    	EasyLogger.i("CollinWang", "param03=" + param03);
-	    	EasyLogger.i("CollinWang", "param04=" + param04);
-	    	EasyLogger.i("CollinWang", "param05=" + param05);
-	    	EasyLogger.i("CollinWang", "param06=" + param06);
-	    	EasyLogger.i("CollinWang", "param07=" + param07);
 	    }
 	}
     
@@ -253,6 +254,7 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
     protected void onDestroy() {
     	super.onDestroy();
     	AMapLocationUtil.getSingleInstance().stopLocation();
+    	mIWXapi.unregisterApp();
     }
     
     @Override

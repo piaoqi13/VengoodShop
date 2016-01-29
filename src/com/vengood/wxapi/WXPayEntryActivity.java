@@ -1,4 +1,4 @@
-package net.sourceforge.simcpux.wxapi;
+package com.vengood.wxapi;
 
 import com.tencent.mm.sdk.constants.ConstantsAPI;
 import com.tencent.mm.sdk.modelbase.BaseReq;
@@ -22,12 +22,12 @@ import android.os.Bundle;
  *作者：王超
  */
 public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
-	private IWXAPI mIWXAPI = null;;
+	private IWXAPI mIWXAPI = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_pay_result);
 		mIWXAPI = WXAPIFactory.createWXAPI(this, Constants.APP_ID);
         mIWXAPI.handleIntent(getIntent(), this);
 	}
@@ -46,7 +46,8 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 
 	@Override
 	public void onResp(BaseResp resp) {
-		EasyLogger.i("CollinWang", "resp=" + resp.toString());
+		EasyLogger.i("CollinWang", "errCode=" + resp.errCode);
+		EasyLogger.i("CollinWang", "errStr=" + resp.errStr);
 		if (resp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle("温馨提示");
