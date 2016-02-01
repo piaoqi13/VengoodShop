@@ -50,7 +50,8 @@
         <!-- 首页 -->
         <activity
             android:name="com.vengood.activity.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name" 
+            android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -79,6 +80,12 @@
             android:name=".wxapi.WXPayEntryActivity"
             android:exported="true"
             android:launchMode="singleTop" />
+        <receiver
+            android:name="com.vengood.receiver.AppRegister">
+            <intent-filter>
+                <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

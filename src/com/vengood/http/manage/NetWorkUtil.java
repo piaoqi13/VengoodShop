@@ -50,4 +50,29 @@ public class NetWorkUtil {
             }
         });
     }
+	
+	public static void getOrderId(final HttpReqListener listener) {
+        HttpClient.getInstance().doWork(HttpUrl.getOrderIdUrl(), HttpParam.getOrderIdParam(), new HttpClient.HttpCallBack() {
+            @Override
+            public void succeed(int statusCode, String content) {
+                try {
+                    JSONObject jsonObject = new JSONObject(content);
+                    String flag = jsonObject.optString("code");
+                    if (flag.equals("0")) {
+                        listener.onUpdate(HttpEvent.EVENT_GET_ORDER_ID_SUCCESS, jsonObject.optString("url"));
+                    } else {
+                    	listener.onUpdate(HttpEvent.EVENT_GET_ORDER_ID_FAIL, jsonObject.optString("msg"));
+                    }
+                } catch (JSONException e) {
+                    Log.e("NetWorkUtil", "getOrderId JsonCatch=", e);
+                    listener.onUpdate(HttpEvent.EVENT_GET_ORDER_ID_FAIL, e.toString());
+                }
+            }
+            
+            @Override
+            public void failed(Throwable error, String content) {
+                listener.onUpdate(HttpEvent.EVENT_GET_ORDER_ID_FAIL, content);
+            }
+        });
+    }
 }

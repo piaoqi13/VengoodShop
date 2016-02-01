@@ -9,8 +9,13 @@ package com.vengood.http;
 public class HttpUrl {
 	public static String Server_Uri = "http://test.vengood.com/";
     public static String Login_Url = "mobile.php";
+    public static String OrderId_Url = "query_weixpay.php";
 
     public static String getLoginUrl() {
         return Server_Uri + Login_Url;
+    }
+    
+    public static String getOrderIdUrl() {
+        return Server_Uri + OrderId_Url;
     }
 }

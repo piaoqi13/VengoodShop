@@ -1,9 +1,12 @@
 package com.vengood.application;
 
+import java.util.LinkedList;
+
 import com.umeng.analytics.MobclickAgent;
 import com.vengood.http.HttpClient;
 import com.vengood.util.Settings;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 
@@ -17,6 +20,10 @@ public class VSApplication extends Application {
 	private static VSApplication mVSApplication = null;
 	public Context mContext = null;
 	public String mLocation = null;
+	
+	// 装载打开Act
+    private LinkedList<Activity> mActList = new LinkedList<Activity>();
+	public String mLogInfo = null;
 	
     public static VSApplication getInstance() {
         return mVSApplication;
@@ -35,4 +42,26 @@ public class VSApplication extends Application {
 		MobclickAgent.openActivityDurationTrack(false);
         MobclickAgent.setCatchUncaughtExceptions(true);
 	};
+	
+	// 添加Activity到集合
+    public void addActivity(Activity activity) {
+        if (mActList == null) {
+            mActList = new LinkedList<Activity>();
+        }
+        mActList.add(activity);
+    }
+
+    // 结束所有打开Activity
+    public void exit() {
+        if (mActList == null) {
+            return;
+        }
+        for (Activity activity : mActList) {
+            if (activity != null) {
+                activity.finish();
+            }
+        }
+        mActList.clear();
+        mActList = null;
+    }
 }

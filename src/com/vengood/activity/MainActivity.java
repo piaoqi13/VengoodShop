@@ -9,6 +9,7 @@ import com.umeng.analytics.MobclickAgent;
 import com.umeng.onlineconfig.OnlineConfigAgent;
 import com.umeng.update.UmengUpdateAgent;
 import com.vengood.R;
+import com.vengood.application.VSApplication;
 import com.vengood.dialog.TipDialog;
 import com.vengood.http.HttpEvent;
 import com.vengood.http.HttpReqListener;
@@ -70,20 +71,38 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
     private String mCacheDatabase = null;
     private IWXAPI mIWXapi = null;
     private String mCachePath = null;
+    
+    private String mIndexUrl = null;// 商城首页
+    private String mPayResult = null;// 结果地址
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mContext = this;
 		setContentView(R.layout.activity_main);
+		mPayResult = getIntent().getStringExtra("Result_Url");
 		UmengUpdateAgent.update(this);
+		mIndexUrl = OnlineConfigAgent.getInstance().getConfigParams(mContext, "url");
+		Log.i("CollinWang", "online param=" + mIndexUrl);
 		mIWXapi = WXAPIFactory.createWXAPI(this, null);
 		mIWXapi.registerApp(Constants.APP_ID);
 		AMapLocationUtil.getSingleInstance().startLocation(mContext);
 		initView();
 		autoLogin();
 		initListener();
+		if (mPayResult == null) {
+			initData(mIndexUrl);
+		} else {
+			initData(mPayResult);
+		}
 	}
+	
+	@Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart(mPageName);
+        MobclickAgent.onResume(this);
+    }
 	
 	@SuppressWarnings("deprecation")
 	@SuppressLint("SetJavaScriptEnabled")
@@ -161,40 +180,42 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 		}
 	}
 	
-    private void initData() {
-        File file = new File(mCachePath);
-        File file2 = new File(mCacheDatabase);
-		Log.i("CollinWang", "缓存文件有没有=" + file.exists());
-		if (Utils.isNetworkAvailable(mContext)) {//file.lastModified() + 2*60*60*1000) < System.currentTimeMillis()
-			// 清空缓存
-			clearCacheFolder(file);
-			clearCacheFolder(file2);
-			// 不使用缓存
-			mWvContent.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
-			Log.i("CollinWang", "不使用缓存！");
-		} else {
-			if (!file.exists()) {
-				mTipDialog = new TipDialog(mContext, "网络不通");
-	        	mTipDialog.show();
-	        	mTipDialog.setListener(this);
-			} else {
-				// 使用缓存
-				mWvContent.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-				Log.i("CollinWang", "使用缓存！");
-			}
-		}
-        
+    private void initData(String url) {
+    	if (mCachePath != null && mCacheDatabase != null) {
+    		File file = new File(mCachePath);
+    		File file2 = new File(mCacheDatabase);
+    		Log.i("CollinWang", "缓存文件有没有=" + file.exists());
+    		if (Utils.isNetworkAvailable(mContext)) {//file.lastModified() + 2*60*60*1000) < System.currentTimeMillis()
+    			// 清空缓存
+    			clearCacheFolder(file);
+    			clearCacheFolder(file2);
+    			// 不使用缓存
+    			mWvContent.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+    			Log.i("CollinWang", "不使用缓存！");
+    		} else {
+    			if (!file.exists()) {
+    				mTipDialog = new TipDialog(mContext, "网络不通");
+    	        	mTipDialog.show();
+    	        	mTipDialog.setListener(this);
+    			} else {
+    				// 使用缓存
+    				mWvContent.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+    				Log.i("CollinWang", "使用缓存！");
+    			}
+    		}
+    	} else {
+    		EasyLogger.i("CollinWang", "Catch=null");
+    	}
+        EasyLogger.i("CollinWang", "加载网页Url=" + url);
         // 加载网页
-        String url = OnlineConfigAgent.getInstance().getConfigParams(mContext, "url");
-        Log.i("CollinWang", "online param=" + url);
-        mWvContent.loadUrl(url.equals("") ? url="http://v.vengood.com/mobile.php?act=module&dzdid=0&name=bj_qmxk&do=list&weid=3" : url);
+        mWvContent.loadUrl(url);
     }
 
     private void initListener() {
     	mWvContent.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
-            	EasyLogger.i("CollinWang", "Url=" + url);
+            	EasyLogger.i("CollinWang", "WebUrl=" + url);
                 super.onPageFinished(view, url);
             }
 
@@ -215,7 +236,7 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 		}
 		
 		@JavascriptInterface
-	    public void reqWinXinPay(String param01, String param02, String param03, String param04, String param05, String param06, String param07) {
+	    public void reqWinXinPay(String param01, String param02, String param03, String param04, String param05, String param06, String param07, String param08) {
 			EasyLogger.i("CollinWang", "appId=" + param01);
 			EasyLogger.i("CollinWang", "partnerId=" + param02);
 			EasyLogger.i("CollinWang", "prepayId=" + param03);
@@ -223,6 +244,17 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 			EasyLogger.i("CollinWang", "timeStamp=" + param05);
 			EasyLogger.i("CollinWang", "packageValue=" + param06);
 			EasyLogger.i("CollinWang", "sign=" + param07);
+			EasyLogger.i("CollinWang", "order_id=" + param08);
+			// 存储订单号码
+			Settings.setString("order_id", param08, true);
+			VSApplication.getInstance().mLogInfo = "appId:" + param01 + "\n"
+					+ "partnerId:" + param02 + "\n"
+					+ "prepayId:" + param03 + "\n"
+					+ "nonceStr:" + param04 + "\n"
+					+"timeStamp:" +  param05 + "\n"
+					+ "packageValue:" + param06 + "\n"
+					+ "sign:" + param07 + "\n"
+					+ "order_id:" + param08;
 			PayReq req = new PayReq();
 			req.appId = param01;
 			req.partnerId = param02;
@@ -235,14 +267,6 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 	    }
 	}
     
-	@Override
-    protected void onResume() {
-        super.onResume();
-        initData();// 考虑设置网络重获焦点
-        MobclickAgent.onPageStart(mPageName);
-        MobclickAgent.onResume(this);
-    }
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -290,14 +314,16 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 		}
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	@Override
 	public void onUpdate(HttpEvent event, Object obj) {
+		String tip = null;
 		switch (event) {
 		case EVENT_LOGIN_SUCCESS:
 			EasyLogger.i("CollinWang", "login succeed");
 			break;
 		case EVENT_LOGIN_FAIL:
-			String tip = (String)obj;
+			tip = (String)obj;
 			EasyLogger.i("CollinWang", "login failed=" + tip);
 			break;
 		}

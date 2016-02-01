@@ -9,4 +9,6 @@ package com.vengood.http;
 public enum HttpEvent {
     EVENT_LOGIN_SUCCESS,
     EVENT_LOGIN_FAIL,
+    EVENT_GET_ORDER_ID_SUCCESS,
+    EVENT_GET_ORDER_ID_FAIL,
 }
