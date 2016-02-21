@@ -191,7 +191,7 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
     			clearCacheFolder(file2);
     			// 不使用缓存
     			mWvContent.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
-    			Log.i("CollinWang", "不使用缓存！");
+    			Log.i("CollinWang", "不使用缓存");
     		} else {
     			if (!file.exists()) {
     				mTipDialog = new TipDialog(mContext, "网络不通");
@@ -200,13 +200,13 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
     			} else {
     				// 使用缓存
     				mWvContent.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-    				Log.i("CollinWang", "使用缓存！");
+    				Log.i("CollinWang", "使用缓存");
     			}
     		}
     	} else {
     		EasyLogger.i("CollinWang", "Catch=null");
     	}
-        EasyLogger.i("CollinWang", "加载网页Url=" + url);
+        EasyLogger.i("CollinWang", "Url=" + url);
         // 加载网页
         mWvContent.loadUrl(url);
     }
@@ -284,7 +284,12 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
     @Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
 		if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-			return doubleClickToExit();
+			if (mWvContent.canGoBack()) {
+				mWvContent.goBack();
+			} else {
+				doubleClickToExit();
+			}
+			return true;
 		}
 		return super.dispatchKeyEvent(event);
 	}
