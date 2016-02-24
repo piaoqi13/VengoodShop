@@ -30,4 +30,9 @@ public class HttpParam {
         params.put("timestamp", String.valueOf(System.currentTimeMillis()/1000));
         return params;
     }
+    
+    public static RequestParams getShopCarParam() {
+        RequestParams params = new RequestParams();
+        return params;
+    }
 }

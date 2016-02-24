@@ -70,10 +70,11 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler, 
 	@Override
 	public void onUpdate(HttpEvent event, Object obj) {
 		String tip = null;
+		Intent intent = null;
 		switch (event) {
 		case EVENT_GET_ORDER_ID_SUCCESS:
 			mLoading.dismiss();
-			Intent intent = new Intent(mContext, MainActivity.class);
+			intent = new Intent(mContext, MainActivity.class);
 			intent.putExtra("Result_Url", (String)obj);
 			Utils.toLeftAnim(mContext, intent, true);
 			break;
@@ -81,31 +82,82 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler, 
 			tip = (String)obj;
 			EasyLogger.i("CollinWang", "getOrderId failed=" + tip);
 			break;
+		case EVENT_GET_SHOP_CAR_URL_SUCCESS:
+			mLoading.dismiss();
+			intent = new Intent(mContext, MainActivity.class);
+			intent.putExtra("Result_Url", (String)obj);
+			Utils.toLeftAnim(mContext, intent, true);
+			break;
+		case EVENT_GET_SHOP_CAR_URL_FAIL:
+			tip = (String)obj;
+			EasyLogger.i("CollinWang", "getShopCarUrl failed=" + tip);
+			break;
+		
 		}
 	}
 	
 	private void showTipDialog(String errCode, String tip) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(tip);
-        builder.setTitle("支付结果=" + errCode);
+        builder.setTitle("支付结果");
+        if (errCode.equals("0")) {
+        	tip = "支付成功";
+        	builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                	mLoading = new LoadingDialog(mContext);
+                    mLoading.showDialog("加载中");
+                	NetWorkUtil.getOrderId(WXPayEntryActivity.this);
+                    dialog.dismiss();
+                }
+            });
 
-        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            	mLoading = new LoadingDialog(mContext);
-                mLoading.showDialog("加载中");
-            	NetWorkUtil.getOrderId(WXPayEntryActivity.this);
-                dialog.dismiss();
-            }
-        });
+            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.create().show();
+        } else if (errCode.equals("-1")) {
+        	tip = "支付失败";
+        	builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                	mLoading = new LoadingDialog(mContext);
+                    mLoading.showDialog("加载中");
+                	NetWorkUtil.getShopCarUrl(WXPayEntryActivity.this);
+                    dialog.dismiss();
+                }
+            });
 
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.create().show();
+            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.create().show();
+        } else if (errCode.equals("-2")) {
+        	tip = "支付取消";
+        	builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                	mLoading = new LoadingDialog(mContext);
+                    mLoading.showDialog("加载中");
+                	NetWorkUtil.getShopCarUrl(WXPayEntryActivity.this);
+                    dialog.dismiss();
+                }
+            });
+
+            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.create().show();
+        }
     }
 	
 }

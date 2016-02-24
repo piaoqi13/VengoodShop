@@ -75,4 +75,29 @@ public class NetWorkUtil {
             }
         });
     }
+	
+	public static void getShopCarUrl(final HttpReqListener listener) {
+        HttpClient.getInstance().doWork(HttpUrl.getShopCarUrl(), HttpParam.getShopCarParam(), new HttpClient.HttpCallBack() {
+            @Override
+            public void succeed(int statusCode, String content) {
+                try {
+                    JSONObject jsonObject = new JSONObject(content);
+                    String flag = jsonObject.optString("code");
+                    if (flag.equals("0000")) {
+                        listener.onUpdate(HttpEvent.EVENT_GET_SHOP_CAR_URL_SUCCESS, jsonObject.optString("url"));
+                    } else {
+                    	listener.onUpdate(HttpEvent.EVENT_GET_SHOP_CAR_URL_FAIL, jsonObject.optString("msg"));
+                    }
+                } catch (JSONException e) {
+                    Log.e("NetWorkUtil", "getShopCarUrl JsonCatch=", e);
+                    listener.onUpdate(HttpEvent.EVENT_GET_SHOP_CAR_URL_FAIL, e.toString());
+                }
+            }
+            
+            @Override
+            public void failed(Throwable error, String content) {
+                listener.onUpdate(HttpEvent.EVENT_GET_SHOP_CAR_URL_FAIL, content);
+            }
+        });
+    }
 }
