@@ -73,6 +73,7 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler, 
 		Intent intent = null;
 		switch (event) {
 		case EVENT_GET_ORDER_ID_SUCCESS:
+			VSApplication.getInstance().isWeiXinResult = true;
 			mLoading.dismiss();
 			intent = new Intent(mContext, MainActivity.class);
 			intent.putExtra("Result_Url", (String)obj);
@@ -83,6 +84,7 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler, 
 			EasyLogger.i("CollinWang", "getOrderId failed=" + tip);
 			break;
 		case EVENT_GET_SHOP_CAR_URL_SUCCESS:
+			VSApplication.getInstance().isWeiXinResult = true;
 			mLoading.dismiss();
 			intent = new Intent(mContext, MainActivity.class);
 			intent.putExtra("Result_Url", (String)obj);
@@ -98,10 +100,10 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler, 
 	
 	private void showTipDialog(String errCode, String tip) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(tip);
         builder.setTitle("支付结果");
         if (errCode.equals("0")) {
         	tip = "支付成功";
+        	builder.setMessage(tip);
         	builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -121,6 +123,7 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler, 
             builder.create().show();
         } else if (errCode.equals("-1")) {
         	tip = "支付失败";
+        	builder.setMessage(tip);
         	builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -140,6 +143,7 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler, 
             builder.create().show();
         } else if (errCode.equals("-2")) {
         	tip = "支付取消";
+        	builder.setMessage(tip);
         	builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {

@@ -284,7 +284,7 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
     @Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
 		if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-			if (mWvContent.canGoBack()) {
+			if (mWvContent.canGoBack() && !VSApplication.getInstance().isWeiXinResult) {
 				mWvContent.goBack();
 			} else {
 				doubleClickToExit();

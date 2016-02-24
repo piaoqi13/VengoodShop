@@ -21,6 +21,8 @@ public class VSApplication extends Application {
 	public Context mContext = null;
 	public String mLocation = null;
 	
+	public boolean isWeiXinResult = false;
+	
 	// 装载打开Act
     private LinkedList<Activity> mActList = new LinkedList<Activity>();
 	public String mLogInfo = null;
