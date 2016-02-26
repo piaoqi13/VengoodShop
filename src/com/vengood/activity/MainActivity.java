@@ -80,6 +80,7 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 		super.onCreate(savedInstanceState);
 		mContext = this;
 		setContentView(R.layout.activity_main);
+		VSApplication.getInstance().addActivity(this);
 		mPayResult = getIntent().getStringExtra("Result_Url");
 		UmengUpdateAgent.update(this);
 		mIndexUrl = OnlineConfigAgent.getInstance().getConfigParams(mContext, "url");
@@ -284,7 +285,7 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
     @Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
 		if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-			if (mWvContent.canGoBack() && !VSApplication.getInstance().isWeiXinResult) {
+			if (mWvContent.canGoBack()) { //&& !VSApplication.getInstance().isWeiXinResult
 				mWvContent.goBack();
 			} else {
 				doubleClickToExit();

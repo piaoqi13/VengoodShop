@@ -74,6 +74,7 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler, 
 		switch (event) {
 		case EVENT_GET_ORDER_ID_SUCCESS:
 			VSApplication.getInstance().isWeiXinResult = true;
+			VSApplication.getInstance().exit();
 			mLoading.dismiss();
 			intent = new Intent(mContext, MainActivity.class);
 			intent.putExtra("Result_Url", (String)obj);
@@ -85,6 +86,7 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler, 
 			break;
 		case EVENT_GET_SHOP_CAR_URL_SUCCESS:
 			VSApplication.getInstance().isWeiXinResult = true;
+			VSApplication.getInstance().exit();
 			mLoading.dismiss();
 			intent = new Intent(mContext, MainActivity.class);
 			intent.putExtra("Result_Url", (String)obj);
@@ -114,12 +116,12 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler, 
                 }
             });
 
-            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            /*builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
                 }
-            });
+            });*/
             builder.create().show();
         } else if (errCode.equals("-1")) {
         	tip = "支付失败";
@@ -134,12 +136,12 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler, 
                 }
             });
 
-            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            /*builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
                 }
-            });
+            });*/
             builder.create().show();
         } else if (errCode.equals("-2")) {
         	tip = "支付取消";
@@ -154,12 +156,12 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler, 
                 }
             });
 
-            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            /*builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
                 }
-            });
+            });*/
             builder.create().show();
         }
     }
