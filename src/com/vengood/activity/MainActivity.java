@@ -74,7 +74,7 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
     
     private String mIndexUrl = null;// 商城首页
     private String mPayResult = null;// 结果地址
-	
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -223,8 +223,9 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
+                //view.loadUrl(url);
+                //return true;
+                return false;
             }
         });
     }

@@ -8,6 +8,7 @@ package com.vengood.http;
  */
 public class HttpUrl {
 	public static String Server_Uri = "http://v.vengood.com/";
+	//public static String Server_Uri = "http://test.vengood.com/";
     public static String Login_Url = "mobile.php";
     public static String OrderId_Url = "query_weixpay.php";
     public static String ShopCar_Url = "get_cart_url.php";
