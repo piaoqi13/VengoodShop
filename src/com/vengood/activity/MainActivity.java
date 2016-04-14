@@ -18,6 +18,7 @@ import com.umeng.socialize.shareboard.SnsPlatform;
 import com.umeng.socialize.utils.ShareBoardlistener;
 import com.umeng.update.UmengUpdateAgent;
 import com.vengood.R;
+import com.vengood.alipay.AlipayManager.AliPayResultCallback;
 import com.vengood.application.VSApplication;
 import com.vengood.dialog.TipDialog;
 import com.vengood.http.HttpEvent;
@@ -54,7 +55,7 @@ import android.widget.Toast;
  *日期：2015年12月31日
  *作者：王超
  */
-public class MainActivity extends Activity implements OnClickListener, HttpReqListener {
+public class MainActivity extends Activity implements OnClickListener, HttpReqListener, AliPayResultCallback {
 	private final String mPageName = "MainActivity";
 	private Context mContext = null;
 	private TipDialog mTipDialog = null;
@@ -485,5 +486,20 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 			new ShareAction(MainActivity.this).setPlatform(share_media).setCallback(umShareListener).withText("多平台分享").share();
 		}
 	};
+
+	@Override
+	public void onSuccess() {
+		// 支付成功
+	}
+
+	@Override
+	public void onWait() {
+		// 支付等待
+	}
+
+	@Override
+	public void onError() {
+		// 支付错误
+	}
     
 }
