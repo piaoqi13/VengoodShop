@@ -3,6 +3,7 @@ package com.vengood.application;
 import java.util.LinkedList;
 
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.socialize.PlatformConfig;
 import com.vengood.http.HttpClient;
 import com.vengood.util.Settings;
 
@@ -43,6 +44,10 @@ public class VSApplication extends Application {
         // UMeng
 		MobclickAgent.openActivityDurationTrack(false);
         MobclickAgent.setCatchUncaughtExceptions(true);
+        // UMengShareRegister
+        PlatformConfig.setWeixin("wx967daebe835fbeac", "5bb696d9ccd75a38c8a0bfe0675559b3");
+        //PlatformConfig.setSinaWeibo("3921700954","04b48b094faeb16683c32669824ebdad");
+        PlatformConfig.setQQZone("100424468", "c7394704798a158208a74ab60104f0ba"); 
 	};
 	
 	// 添加Activity到集合

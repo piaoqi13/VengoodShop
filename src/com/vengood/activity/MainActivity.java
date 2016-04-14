@@ -1,12 +1,21 @@
 package com.vengood.activity;
 
 import java.io.File;
+import java.util.Map;
 
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.onlineconfig.OnlineConfigAgent;
+import com.umeng.socialize.ShareAction;
+import com.umeng.socialize.UMAuthListener;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.media.UMImage;
+import com.umeng.socialize.shareboard.SnsPlatform;
+import com.umeng.socialize.utils.ShareBoardlistener;
 import com.umeng.update.UmengUpdateAgent;
 import com.vengood.R;
 import com.vengood.application.VSApplication;
@@ -75,6 +84,16 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
     private String mIndexUrl = null;// 商城首页
     private String mPayResult = null;// 结果地址
     
+    private UMShareAPI mShareAPI = null;
+    private final SHARE_MEDIA[] mDisplayList = new SHARE_MEDIA[] { 
+    		SHARE_MEDIA.WEIXIN, 
+    		SHARE_MEDIA.WEIXIN_CIRCLE,
+			SHARE_MEDIA.SINA, 
+			SHARE_MEDIA.QQ, 
+			SHARE_MEDIA.QZONE};
+    
+    private UMImage mUMengImage = null;
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -83,8 +102,9 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 		VSApplication.getInstance().addActivity(this);
 		mPayResult = getIntent().getStringExtra("Result_Url");
 		UmengUpdateAgent.update(this);
+		mShareAPI = UMShareAPI.get(this);
 		mIndexUrl = OnlineConfigAgent.getInstance().getConfigParams(mContext, "url");
-		mIndexUrl = "http://test.vengood.com/mobile.php?act=module&dzdid=0&name=bj_qmxk&do=list&weid=3";
+		//mIndexUrl = "http://test.vengood.com/mobile.php?act=module&dzdid=0&name=bj_qmxk&do=list&weid=3";
 		Log.i("CollinWang", "online param=" + mIndexUrl);
 		mIWXapi = WXAPIFactory.createWXAPI(this, null);
 		mIWXapi.registerApp(Constants.APP_ID);
@@ -181,6 +201,51 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 			EasyLogger.i("CollinWang", "autoLogin is not run");
 		}
 	}
+	
+	public void clickUMengSocialization(int id) {
+		SHARE_MEDIA platform = null;
+		/*if (id == R.id.app_auth_sina) {
+			platform = SHARE_MEDIA.SINA;
+		} else if (id == R.id.app_auth_qq) {
+			platform = SHARE_MEDIA.QQ;
+		} else if (id == R.id.app_auth_weixin) {
+			platform = SHARE_MEDIA.WEIXIN;
+		}*/
+		platform = SHARE_MEDIA.QQ;
+        mShareAPI.doOauthVerify(this, platform, umAuthListener);
+        //mShareAPI.isInstall(this, platform);// 安装
+        //mShareAPI.getPlatformInfo(this, platform, umAuthListener);// 信息
+	}
+	
+	public void deleteUMengSocialization(int id) {
+		SHARE_MEDIA platform = null;
+		/*if (id == R.id.app_auth_sina) {
+			platform = SHARE_MEDIA.SINA;
+		} else if (id == R.id.app_auth_qq) {
+			platform = SHARE_MEDIA.QQ;
+		} else if (id == R.id.app_auth_weixin) {
+			platform = SHARE_MEDIA.WEIXIN;
+		}*/
+        mShareAPI.deleteOauth(this, platform, umdelAuthListener);
+	}
+	
+	public void startShared() {
+		// 分享
+        mUMengImage = new UMImage(MainActivity.this, "http://www.umeng.com/images/pic/social/integrated_3.png");
+		new ShareAction(MainActivity.this).setDisplayList(mDisplayList)
+				.withText("飘奇工作室")
+				.withTitle("title")
+				.withTargetUrl("http://www.baidu.com")
+				.withMedia(mUMengImage)
+				.setListenerList(umShareListener, umShareListener).setShareboardclickCallback(shareBoardlistener)
+				.open();
+	}
+	
+	@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mShareAPI.onActivityResult(requestCode, resultCode, data);
+    } 
 	
     private void initData(String url) {
     	if (mCachePath != null && mCacheDatabase != null) {
@@ -303,6 +368,8 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 			mExitTime = System.currentTimeMillis();
 		} else {
 			finish();
+			//startShared();
+			//clickUMengSocialization(4);
 		}
 		return true;
 	}
@@ -357,4 +424,66 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 		return deletedFiles;
 	}
 	
+	/** 注册友盟分享结果回调 **/
+	private UMAuthListener umAuthListener = new UMAuthListener() {
+        @Override
+        public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
+            Toast.makeText(getApplicationContext(), "Authorize succeed", Toast.LENGTH_SHORT).show();
+        }
+        
+        @Override
+        public void onError(SHARE_MEDIA platform, int action, Throwable t) {
+            Toast.makeText( getApplicationContext(), "Authorize fail", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onCancel(SHARE_MEDIA platform, int action) {
+            Toast.makeText( getApplicationContext(), "Authorize cancel", Toast.LENGTH_SHORT).show();
+        }
+    };
+    
+    /** 注销友盟分享结果回调 **/
+    private UMAuthListener umdelAuthListener = new UMAuthListener() {
+        @Override
+        public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
+            Toast.makeText(getApplicationContext(), "delete Authorize succeed", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onError(SHARE_MEDIA platform, int action, Throwable t) {
+            Toast.makeText( getApplicationContext(), "delete Authorize fail", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onCancel(SHARE_MEDIA platform, int action) {
+            Toast.makeText( getApplicationContext(), "delete Authorize cancel", Toast.LENGTH_SHORT).show();
+        }
+    };
+	
+    /** 友盟分享结果回调 **/
+	private UMShareListener umShareListener = new UMShareListener() {
+		@Override
+		public void onResult(SHARE_MEDIA platform) {
+			Log.d("plat", "platform" + platform);
+			Toast.makeText(MainActivity.this, platform + " 分享成功", Toast.LENGTH_SHORT).show();
+		}
+
+		@Override
+		public void onError(SHARE_MEDIA platform, Throwable t) {
+			Toast.makeText(MainActivity.this, platform + " 分享失败", Toast.LENGTH_SHORT).show();
+		}
+		
+		@Override
+		public void onCancel(SHARE_MEDIA platform) {
+			Toast.makeText(MainActivity.this, platform + " 分享取消", Toast.LENGTH_SHORT).show();
+		}
+	};
+
+	private ShareBoardlistener shareBoardlistener = new ShareBoardlistener() {
+		@Override
+		public void onclick(SnsPlatform snsPlatform, SHARE_MEDIA share_media) {
+			new ShareAction(MainActivity.this).setPlatform(share_media).setCallback(umShareListener).withText("多平台分享").share();
+		}
+	};
+    
 }
