@@ -7,6 +7,8 @@ import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.message.IUmengRegisterCallback;
+import com.umeng.message.PushAgent;
 import com.umeng.onlineconfig.OnlineConfigAgent;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMAuthListener;
@@ -37,6 +39,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -104,6 +107,25 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 		mPayResult = getIntent().getStringExtra("Result_Url");
 		UmengUpdateAgent.update(this);
 		mShareAPI = UMShareAPI.get(this);
+		// 推送
+		PushAgent mPushAgent = PushAgent.getInstance(this);
+		mPushAgent.enable();
+		// 推送统计
+		PushAgent.getInstance(this).onAppStart();
+		// 拿到测试设备ID
+		mPushAgent.enable(new IUmengRegisterCallback() {
+			@Override
+			public void onRegistered(final String registrationId) {
+				new Handler().post(new Runnable() {
+					@Override
+					public void run() {
+						// onRegistered方法的参数registrationId即是device_token
+						EasyLogger.d("CollinWang", "device_token="+ registrationId);
+					}
+				});
+			}
+		});
+		// 拿到在线参数
 		mIndexUrl = OnlineConfigAgent.getInstance().getConfigParams(mContext, "url");
 		//mIndexUrl = "http://test.vengood.com/mobile.php?act=module&dzdid=0&name=bj_qmxk&do=list&weid=3";
 		Log.i("CollinWang", "online param=" + mIndexUrl);

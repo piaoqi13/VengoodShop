@@ -44,11 +44,18 @@
         android:theme="@android:style/Theme.Light.NoTitleBar" >
         <!-- 高德定位 -->
         <meta-data
-            android:name="com.amap.api.v2.apikey" android:value="d9a3a833a33a8d727795c459f16067da" >
+            android:name="com.amap.api.v2.apikey" 
+            android:value="d9a3a833a33a8d727795c459f16067da" >
         </meta-data>
         <!-- 友盟统计 -->
         <meta-data
-            android:name="UMENG_APPKEY" android:value="56872e2a67e58eba0a001235" >
+            android:name="UMENG_APPKEY" 
+            android:value="56872e2a67e58eba0a001235" >
+        </meta-data>
+        <!-- 友盟推送 -->
+        <meta-data
+            android:name="UMENG_MESSAGE_SECRET"
+            android:value="3ca17257df665c665f12dd096a34e803" >
         </meta-data>
         <meta-data
             android:name="UMENG_CHANNEL"

@@ -3,6 +3,7 @@ package com.vengood.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.umeng.message.PushAgent;
 import com.umeng.onlineconfig.OnlineConfigAgent;
 import com.vengood.R;
 import com.vengood.adapter.ViewPagerAdapter;
@@ -42,6 +43,7 @@ public class GuidePageActivity extends Activity implements OnPageChangeListener 
 		setContentView(R.layout.guide_page_activity);
 		mContext = this;
 		OnlineConfigAgent.getInstance().updateOnlineConfig(mContext);
+		PushAgent.getInstance(this).onAppStart();
 		initView();
 		initData();
 		initListener();

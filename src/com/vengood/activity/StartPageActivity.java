@@ -1,5 +1,6 @@
 package com.vengood.activity;
 
+import com.umeng.message.PushAgent;
 import com.umeng.onlineconfig.OnlineConfigAgent;
 import com.vengood.R;
 import com.vengood.util.Settings;
@@ -42,6 +43,7 @@ public class StartPageActivity extends Activity {
         super.onCreate(savedInstanceState);
         mContext = this;
         OnlineConfigAgent.getInstance().updateOnlineConfig(mContext);
+        PushAgent.getInstance(this).onAppStart();
         boolean isFirstTime = Settings.getBoolean("is_first_time", true, true);
         if (isFirstTime) {
         	Intent intent = new Intent(mContext, GuidePageActivity.class);
