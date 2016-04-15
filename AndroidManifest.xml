@@ -47,6 +47,23 @@
             android:name="com.amap.api.v2.apikey" 
             android:value="d9a3a833a33a8d727795c459f16067da" >
         </meta-data>
+        <!-- 百度定位 -->
+        <meta-data
+            android:name="api_key"
+            android:value="ymLTYv7QkzFW0yWdL7MH8kSVaocyVML6" />
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="8IasSoGnqHwQHuh6bIUpGDKZ" />
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:permission="oem.permission.SENDMAIL"
+            android:process=":remote" >
+            <intent-filter>
+                <action android:name="com.baidu.location.service_v2.2" >
+                </action>
+            </intent-filter>
+        </service>
         <!-- 友盟统计 -->
         <meta-data
             android:name="UMENG_APPKEY" 

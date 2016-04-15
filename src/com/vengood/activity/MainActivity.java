@@ -26,7 +26,7 @@ import com.vengood.dialog.TipDialog;
 import com.vengood.http.HttpEvent;
 import com.vengood.http.HttpReqListener;
 import com.vengood.http.manage.NetWorkUtil;
-import com.vengood.util.AMapLocationUtil;
+import com.vengood.util.BaiduMapUtil;
 import com.vengood.util.Constants;
 import com.vengood.util.EasyLogger;
 import com.vengood.util.Settings;
@@ -92,7 +92,7 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
     private final SHARE_MEDIA[] mDisplayList = new SHARE_MEDIA[] { 
     		SHARE_MEDIA.WEIXIN, 
     		SHARE_MEDIA.WEIXIN_CIRCLE,
-			SHARE_MEDIA.SINA, 
+			//SHARE_MEDIA.SINA, 
 			SHARE_MEDIA.QQ, 
 			SHARE_MEDIA.QZONE};
     
@@ -125,13 +125,15 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 				});
 			}
 		});
+		// 百度定位走起
+		BaiduMapUtil.getInstance().startLocation(mContext);
 		// 拿到在线参数
 		mIndexUrl = OnlineConfigAgent.getInstance().getConfigParams(mContext, "url");
 		//mIndexUrl = "http://test.vengood.com/mobile.php?act=module&dzdid=0&name=bj_qmxk&do=list&weid=3";
 		Log.i("CollinWang", "online param=" + mIndexUrl);
 		mIWXapi = WXAPIFactory.createWXAPI(this, null);
 		mIWXapi.registerApp(Constants.APP_ID);
-		AMapLocationUtil.getSingleInstance().startLocation(mContext);
+		//AMapLocationUtil.getSingleInstance().startLocation(mContext);
 		initView();
 		autoLogin();
 		initListener();
@@ -368,7 +370,8 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
     @Override
     protected void onDestroy() {
     	super.onDestroy();
-    	AMapLocationUtil.getSingleInstance().stopLocation();
+    	//AMapLocationUtil.getSingleInstance().stopLocation();
+    	BaiduMapUtil.getInstance().stopLocation();
     	mIWXapi.unregisterApp();
     }
     

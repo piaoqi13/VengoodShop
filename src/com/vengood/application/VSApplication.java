@@ -24,6 +24,9 @@ public class VSApplication extends Application {
 	
 	public boolean isWeiXinResult = false;
 	
+	public String mProvince = null;// 当前省份
+	public String mCity = null;// 当前城市
+	
 	// 装载打开Act
     private LinkedList<Activity> mActList = new LinkedList<Activity>();
 	public String mLogInfo = null;
