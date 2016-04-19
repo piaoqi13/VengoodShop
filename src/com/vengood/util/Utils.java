@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.telephony.TelephonyManager;
 
 /**
  *类名：Utils.java
@@ -53,5 +54,17 @@ public class Utils {
 			}
 		}
 		return false;
+	}
+    
+    public static String getPhoneNumber(Context context) {
+		TelephonyManager mTelephonyMgr;
+		mTelephonyMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+		return mTelephonyMgr.getLine1Number();
+	}
+    
+    public static String getDeviceId(Context context) {
+		TelephonyManager mTelephonyMgr;
+		mTelephonyMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+		return mTelephonyMgr.getDeviceId();
 	}
 }

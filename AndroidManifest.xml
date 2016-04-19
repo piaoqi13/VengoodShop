@@ -13,7 +13,6 @@
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
     <uses-permission android:name="android.permission.INTERNET" />
-    
     <!-- 友盟社会化 -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -27,15 +26,19 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
-    
     <!-- 高德定位 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <permission android:protectionLevel="normal" android:name="oem.permission.SENDMAIL" />
-
+    <!-- 百度鹰眼 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+	
     <application
         android:name="com.vengood.application.VSApplication"
         android:allowBackup="true"
@@ -63,6 +66,16 @@
                 <action android:name="com.baidu.location.service_v2.2" >
                 </action>
             </intent-filter>
+        </service>
+        <!-- 百度鹰眼 -->
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="ymLTYv7QkzFW0yWdL7MH8kSVaocyVML6" />
+        <service
+            android:name="com.baidu.trace.LBSTraceService"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="oem.permission.SENDMAIL" >
         </service>
         <!-- 友盟统计 -->
         <meta-data
