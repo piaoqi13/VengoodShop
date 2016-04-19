@@ -367,6 +367,13 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 			req.sign = param07;
 	    	mIWXapi.sendReq(req);
 	    }
+		
+		@JavascriptInterface
+		public void startLocation() {
+			double latitude = VSApplication.getInstance().mLatitude;// 纬度
+			double longitude = VSApplication.getInstance().mLongitude;// 经度
+			mWvContent.loadUrl("javascript: getLocationFromClient('"+ longitude +", "+ latitude +"')");  
+		}
 	}
     
     @Override

@@ -53,6 +53,8 @@ public class BaiduMapUtil {
         	// 拿到当前省份城市名称
         	VSApplication.getInstance().mProvince = location.getProvince();
         	VSApplication.getInstance().mCity = location.getCity();
+        	VSApplication.getInstance().mLatitude = location.getLatitude();
+        	VSApplication.getInstance().mLongitude = location.getLongitude();
         	EasyLogger.i("CollinWang", "Latitude=" + location.getLatitude() + "；Longitude="+ location.getLongitude());
         	// 停止
         	stopLocation();

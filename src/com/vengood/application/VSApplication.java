@@ -27,6 +27,9 @@ public class VSApplication extends Application {
 	public String mProvince = null;// 当前省份
 	public String mCity = null;// 当前城市
 	
+	public double mLatitude = 0;// 纬度
+	public double mLongitude = 0;// 经度
+	
 	// 装载打开Act
     private LinkedList<Activity> mActList = new LinkedList<Activity>();
 	public String mLogInfo = null;
