@@ -236,40 +236,25 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 		}
 	}
 	
-	public void clickUMengSocialization(int id) {
+	public void startOauthVerify() {
 		SHARE_MEDIA platform = null;
-		/*if (id == R.id.app_auth_sina) {
-			platform = SHARE_MEDIA.SINA;
-		} else if (id == R.id.app_auth_qq) {
-			platform = SHARE_MEDIA.QQ;
-		} else if (id == R.id.app_auth_weixin) {
-			platform = SHARE_MEDIA.WEIXIN;
-		}*/
-		platform = SHARE_MEDIA.QQ;
+		platform = SHARE_MEDIA.WEIXIN;
         mShareAPI.doOauthVerify(this, platform, umAuthListener);
-        //mShareAPI.isInstall(this, platform);// 安装
-        //mShareAPI.getPlatformInfo(this, platform, umAuthListener);// 信息
 	}
 	
-	public void deleteUMengSocialization(int id) {
+	public void deleteOauth() {
 		SHARE_MEDIA platform = null;
-		/*if (id == R.id.app_auth_sina) {
-			platform = SHARE_MEDIA.SINA;
-		} else if (id == R.id.app_auth_qq) {
-			platform = SHARE_MEDIA.QQ;
-		} else if (id == R.id.app_auth_weixin) {
-			platform = SHARE_MEDIA.WEIXIN;
-		}*/
+		platform = SHARE_MEDIA.WEIXIN;
         mShareAPI.deleteOauth(this, platform, umdelAuthListener);
 	}
 	
-	public void startShared() {
+	public void startShared(String pictureUrl, String text, String title, String tatgetUrl) {
 		// 分享
-        mUMengImage = new UMImage(MainActivity.this, "http://www.umeng.com/images/pic/social/integrated_3.png");
+        mUMengImage = new UMImage(MainActivity.this, pictureUrl);
 		new ShareAction(MainActivity.this).setDisplayList(mDisplayList)
-				.withText("飘奇工作室")
+				.withText(text)
 				.withTitle("title")
-				.withTargetUrl("http://www.baidu.com")
+				.withTargetUrl(tatgetUrl)
 				.withMedia(mUMengImage)
 				.setListenerList(umShareListener, umShareListener).setShareboardclickCallback(shareBoardlistener)
 				.open();
@@ -322,7 +307,6 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                //view.loadUrl(url);
                 //return true;
                 return false;
             }
@@ -368,6 +352,7 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 	    	mIWXapi.sendReq(req);
 	    }
 		
+		// http://blog.csdn.net/it1039871366/article/details/46372207
 		@JavascriptInterface
 		public void startLocation() {
 			final double latitude = VSApplication.getInstance().mLatitude;// 纬度
@@ -379,6 +364,22 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 				}
 			});
 			EasyLogger.i("CollinWang", "startLocation run：longitude=" + longitude + "；latitude=" + latitude);
+		}
+		
+		@JavascriptInterface
+		public void startUMengShared(String pictureUrl, String text, String title, String tatgetUrl) {
+			EasyLogger.i("CollinWang", "pictureUrl=" + pictureUrl);// 图片地址
+			EasyLogger.i("CollinWang", "text=" + text);// 文案
+			EasyLogger.i("CollinWang", "title=" + title);// 标题
+			EasyLogger.i("CollinWang", "TatgetUrl=" + tatgetUrl);// 目标地址
+			EasyLogger.i("CollinWang", "startUMengShared is run");
+			startShared(pictureUrl, text, title, tatgetUrl);
+		}
+		
+		@JavascriptInterface
+		public void startWeiXinLogin() {
+			startOauthVerify();
+			EasyLogger.i("CollinWang", "startWinXinLogin is run");
 		}
 	}
     
