@@ -370,9 +370,15 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 		
 		@JavascriptInterface
 		public void startLocation() {
-			double latitude = VSApplication.getInstance().mLatitude;// 纬度
-			double longitude = VSApplication.getInstance().mLongitude;// 经度
-			mWvContent.loadUrl("javascript: getLocationFromClient('"+ longitude +", "+ latitude +"')");  
+			final double latitude = VSApplication.getInstance().mLatitude;// 纬度
+			final double longitude = VSApplication.getInstance().mLongitude;// 经度
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					mWvContent.loadUrl("javascript:getLocationFromClient('"+ longitude +", "+ latitude +"')");  
+				}
+			});
+			EasyLogger.i("CollinWang", "startLocation run：longitude=" + longitude + "；latitude=" + latitude);
 		}
 	}
     
