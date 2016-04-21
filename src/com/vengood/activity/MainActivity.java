@@ -10,14 +10,13 @@ import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.IUmengRegisterCallback;
 import com.umeng.message.PushAgent;
 import com.umeng.onlineconfig.OnlineConfigAgent;
+import com.umeng.socialize.Config;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.media.UMImage;
-import com.umeng.socialize.shareboard.SnsPlatform;
-import com.umeng.socialize.utils.ShareBoardlistener;
 import com.umeng.update.UmengUpdateAgent;
 import com.vengood.R;
 import com.vengood.alipay.AlipayManager.AliPayResultCallback;
@@ -35,6 +34,7 @@ import com.vengood.util.Utils;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -249,14 +249,17 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 	}
 	
 	public void startShared(String pictureUrl, String text, String title, String tatgetUrl) {
-		// 分享
+		ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setMessage("分享启动中...");
+        Config.dialog = dialog;
         mUMengImage = new UMImage(MainActivity.this, pictureUrl);
+        //mUMengImage = new UMImage(MainActivity.this, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
 		new ShareAction(MainActivity.this).setDisplayList(mDisplayList)
-				.withText(text)
-				.withTitle("title")
+				.withText("飘奇工作室")
+				.withTitle(title)
 				.withTargetUrl(tatgetUrl)
 				.withMedia(mUMengImage)
-				.setListenerList(umShareListener, umShareListener).setShareboardclickCallback(shareBoardlistener)
+				.setListenerList(umShareListener)
 				.open();
 	}
 	
@@ -372,7 +375,6 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 			EasyLogger.i("CollinWang", "text=" + text);// 文案
 			EasyLogger.i("CollinWang", "title=" + title);// 标题
 			EasyLogger.i("CollinWang", "TatgetUrl=" + tatgetUrl);// 目标地址
-			EasyLogger.i("CollinWang", "startUMengShared is run");
 			runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
@@ -423,8 +425,6 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 			mExitTime = System.currentTimeMillis();
 		} else {
 			finish();
-			//startShared();
-			//clickUMengSocialization(4);
 		}
 		return true;
 	}
@@ -519,7 +519,7 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 	private UMShareListener umShareListener = new UMShareListener() {
 		@Override
 		public void onResult(SHARE_MEDIA platform) {
-			Log.d("plat", "platform" + platform);
+			Log.d("UMeng", "platform=" + platform);
 			Toast.makeText(MainActivity.this, platform + " 分享成功", Toast.LENGTH_SHORT).show();
 		}
 
@@ -531,13 +531,6 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 		@Override
 		public void onCancel(SHARE_MEDIA platform) {
 			Toast.makeText(MainActivity.this, platform + " 分享取消", Toast.LENGTH_SHORT).show();
-		}
-	};
-
-	private ShareBoardlistener shareBoardlistener = new ShareBoardlistener() {
-		@Override
-		public void onclick(SnsPlatform snsPlatform, SHARE_MEDIA share_media) {
-			new ShareAction(MainActivity.this).setPlatform(share_media).setCallback(umShareListener).withText("多平台分享").share();
 		}
 	};
 
