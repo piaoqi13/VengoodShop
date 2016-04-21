@@ -367,13 +367,19 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 		}
 		
 		@JavascriptInterface
-		public void startUMengShared(String pictureUrl, String text, String title, String tatgetUrl) {
+		public void startUMengShared(final String pictureUrl, final String text, final String title, final String tatgetUrl) {
 			EasyLogger.i("CollinWang", "pictureUrl=" + pictureUrl);// 图片地址
 			EasyLogger.i("CollinWang", "text=" + text);// 文案
 			EasyLogger.i("CollinWang", "title=" + title);// 标题
 			EasyLogger.i("CollinWang", "TatgetUrl=" + tatgetUrl);// 目标地址
 			EasyLogger.i("CollinWang", "startUMengShared is run");
-			startShared(pictureUrl, text, title, tatgetUrl);
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					startShared(pictureUrl, text, title, tatgetUrl);
+				}
+			});
+			//startShared(pictureUrl, text, title, tatgetUrl);
 		}
 		
 		@JavascriptInterface
