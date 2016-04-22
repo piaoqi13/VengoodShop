@@ -381,13 +381,17 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 					startShared(pictureUrl, text, title, tatgetUrl);
 				}
 			});
-			//startShared(pictureUrl, text, title, tatgetUrl);
 		}
 		
 		@JavascriptInterface
 		public void startWeiXinLogin() {
-			startOauthVerify();
 			EasyLogger.i("CollinWang", "startWinXinLogin is run");
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					startOauthVerify();
+				}
+			});
 		}
 	}
     
@@ -479,11 +483,18 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 		return deletedFiles;
 	}
 	
-	/** 注册友盟分享结果回调 **/
+	/** 注册友盟授权回调 **/
 	private UMAuthListener umAuthListener = new UMAuthListener() {
         @Override
-        public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
+        public void onComplete(SHARE_MEDIA platform, int action, final Map<String, String> data) {
             Toast.makeText(getApplicationContext(), "Authorize succeed", Toast.LENGTH_SHORT).show();
+            EasyLogger.i("CollinWang", "Information=" + data);
+            runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					mWvContent.loadUrl("javascript:getLoginInfoFromClient('"+ data +"')");  
+				}
+			});
         }
         
         @Override
@@ -497,7 +508,7 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
         }
     };
     
-    /** 注销友盟分享结果回调 **/
+    /** 注销友盟授权结果回调 **/
     private UMAuthListener umdelAuthListener = new UMAuthListener() {
         @Override
         public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
