@@ -106,11 +106,11 @@ public class NetWorkUtil {
 	
 	public static void getWeiXinUserInfo(final HttpReqListener listener, String access_token, String openid) {
         HttpClient.getInstance().doWork(HttpUrl.getWeiXinUserInfoUrl(), HttpParam.getWeiXinParam(access_token, openid), new HttpClient.HttpCallBack() {
+        	WeiXinUserInfo userInfo = new WeiXinUserInfo();
+        	Gson gson = new Gson();
             @Override
             public void succeed(int statusCode, String content) {
             	EasyLogger.i("NetWorkUtil", "getWeiXinUserInfo=" + content);
-            	WeiXinUserInfo userInfo = new WeiXinUserInfo();
-            	Gson gson = new Gson();
                 try {
                     String code = "0";
                     String errMsg = "请求成功";
@@ -131,7 +131,12 @@ public class NetWorkUtil {
             
             @Override
             public void failed(Throwable error, String content) {
-                listener.onUpdate(HttpEvent.EVENT_GET_WEIXIN_USERINFO_URL_FAIL, content);
+            	String code = "-1";
+                String errMsg = "请求失败=" + content;
+                userInfo.setCode(code);
+                userInfo.setErrMsg(errMsg);
+                userInfo.setUser("null");
+                listener.onUpdate(HttpEvent.EVENT_GET_WEIXIN_USERINFO_URL_FAIL, gson.toJson(userInfo));
             }
         });
     }
