@@ -3,11 +3,14 @@ package com.vengood.http.manage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.gson.Gson;
 import com.vengood.http.HttpClient;
 import com.vengood.http.HttpEvent;
 import com.vengood.http.HttpParam;
 import com.vengood.http.HttpReqListener;
 import com.vengood.http.HttpUrl;
+import com.vengood.model.WeiXinUserInfo;
+import com.vengood.util.EasyLogger;
 
 import android.util.Log;
 
@@ -97,6 +100,38 @@ public class NetWorkUtil {
             @Override
             public void failed(Throwable error, String content) {
                 listener.onUpdate(HttpEvent.EVENT_GET_SHOP_CAR_URL_FAIL, content);
+            }
+        });
+    }
+	
+	public static void getWeiXinUserInfo(final HttpReqListener listener, String access_token, String openid) {
+        HttpClient.getInstance().doWork(HttpUrl.getWeiXinUserInfoUrl(), HttpParam.getWeiXinParam(access_token, openid), new HttpClient.HttpCallBack() {
+            @Override
+            public void succeed(int statusCode, String content) {
+            	EasyLogger.i("NetWorkUtil", "getWeiXinUserInfo=" + content);
+            	WeiXinUserInfo userInfo = new WeiXinUserInfo();
+            	Gson gson = new Gson();
+                try {
+                    String code = "0";
+                    String errMsg = "请求成功";
+                    userInfo.setCode(code);
+                    userInfo.setErrMsg(errMsg);
+                    userInfo.setUser(content);
+                    listener.onUpdate(HttpEvent.EVENT_GET_WEIXIN_USERINFO_URL_SUCCESS, gson.toJson(userInfo));
+                } catch (Exception e) {
+                	String code = "-1";
+                    String errMsg = "请求失败=" + e.toString();
+                    userInfo.setCode(code);
+                    userInfo.setErrMsg(errMsg);
+                    userInfo.setUser(content);
+                    Log.e("NetWorkUtil", "getWeiXinUserInfo JsonCatch=", e);
+                    listener.onUpdate(HttpEvent.EVENT_GET_WEIXIN_USERINFO_URL_FAIL, gson.toJson(userInfo));
+                }
+            }
+            
+            @Override
+            public void failed(Throwable error, String content) {
+                listener.onUpdate(HttpEvent.EVENT_GET_WEIXIN_USERINFO_URL_FAIL, content);
             }
         });
     }

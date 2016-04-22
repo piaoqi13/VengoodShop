@@ -9,6 +9,8 @@ package com.vengood.http;
 public class HttpUrl {
 	//public static String Server_Uri = "http://v.vengood.com/";
 	public static String Server_Uri = "http://test.vengood.com/";
+	public static String WeinXin_Uri = "https://api.weixin.qq.com/sns/";
+	public static String WeinXin_UserInfo_Uri = "userinfo";
     public static String Login_Url = "mobile.php";
     public static String OrderId_Url = "query_weixpay.php";
     public static String ShopCar_Url = "get_cart_url.php";
@@ -23,5 +25,9 @@ public class HttpUrl {
     
     public static String getShopCarUrl() {
         return Server_Uri + ShopCar_Url;
+    }
+    
+    public static String getWeiXinUserInfoUrl() {
+        return WeinXin_Uri + WeinXin_UserInfo_Uri;
     }
 }

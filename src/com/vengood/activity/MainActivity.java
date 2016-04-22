@@ -460,6 +460,17 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 			tip = (String)obj;
 			EasyLogger.i("CollinWang", "login failed=" + tip);
 			break;
+		case EVENT_GET_WEIXIN_USERINFO_URL_SUCCESS:
+		case EVENT_GET_WEIXIN_USERINFO_URL_FAIL:
+			final String data = (String)obj;
+			EasyLogger.i("CollinWang", "final LoginInfo=" + data);
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					mWvContent.loadUrl("javascript:getLoginInfoFromClient('"+ data +"')");  
+				}
+			});
+			break;
 		}
 	}
 
@@ -489,12 +500,7 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
         public void onComplete(SHARE_MEDIA platform, int action, final Map<String, String> data) {
             Toast.makeText(getApplicationContext(), "Authorize succeed", Toast.LENGTH_SHORT).show();
             EasyLogger.i("CollinWang", "Information=" + data);
-            runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					mWvContent.loadUrl("javascript:getLoginInfoFromClient('"+ data +"')");  
-				}
-			});
+            NetWorkUtil.getWeiXinUserInfo(MainActivity.this, data.get("access_token"), data.get("openid"));
         }
         
         @Override

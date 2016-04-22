@@ -35,4 +35,11 @@ public class HttpParam {
         RequestParams params = new RequestParams();
         return params;
     }
+    
+    public static RequestParams getWeiXinParam(String access_token, String openid) {
+        RequestParams params = new RequestParams();
+        params.put("access_token", access_token);
+        params.put("openid", openid);
+        return params;
+    }
 }
