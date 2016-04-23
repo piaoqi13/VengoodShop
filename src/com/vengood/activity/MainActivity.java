@@ -462,12 +462,14 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 			break;
 		case EVENT_GET_WEIXIN_USERINFO_URL_SUCCESS:
 		case EVENT_GET_WEIXIN_USERINFO_URL_FAIL:
-			final String data = (String)obj;
+			//final String data = (String)obj;
+			final Object data = obj;
 			EasyLogger.i("CollinWang", "final LoginInfo=" + data);
 			runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-					mWvContent.loadUrl("javascript:getLoginInfoFromClient('"+ data +"')");  
+					EasyLogger.i("CollinWang", "content=" + "javascript:getLoginInfoFromClient("+ data +")");
+					mWvContent.loadUrl("javascript:getLoginInfoFromClient("+ data +")");  
 				}
 			});
 			break;
