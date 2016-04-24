@@ -2,11 +2,14 @@ package com.vengood.util;
 
 import com.baidu.trace.LBSTraceClient;
 import com.baidu.trace.LocationMode;
+import com.baidu.trace.OnEntityListener;
 import com.baidu.trace.OnStartTraceListener;
 import com.baidu.trace.OnStopTraceListener;
+import com.baidu.trace.OnTrackListener;
 import com.baidu.trace.Trace;
 
 import android.content.Context;
+import android.os.Looper;
 
 /**
 *  类名：BaiduTraceUtil.java
@@ -17,6 +20,8 @@ import android.content.Context;
 public class BaiduTraceUtil {
 	private static BaiduTraceUtil mBaiduTraceUtil = null;
 	
+	protected static OnEntityListener entityListener = null;
+	protected static OnTrackListener mTrackListener = null;
     protected static OnStartTraceListener mStartTraceListener = null;
     protected static OnStopTraceListener mStopTraceListener = null;
     private int mGatherInterval = 2 * 60;
@@ -49,10 +54,13 @@ public class BaiduTraceUtil {
 		mClient.setInterval(mGatherInterval, mPackInterval);
 		// 请求协议
 		mClient.setProtocolType(0);
+		// 轨迹监听
+		initOnTrackListener();
 	}
 	
 	public void startTrace(Context context) {
 		initTrace(context);
+		mClient.setOnTrackListener(mTrackListener);
 		mClient.startTrace(mTrace, mStartTraceListener);
 	}
 	
@@ -65,10 +73,26 @@ public class BaiduTraceUtil {
 		mClient.onDestroy();
 	}
 	
+	private void initOnTrackListener() {
+		mTrackListener = new OnTrackListener() {
+			@Override
+			public void onRequestFailedCallback(String msg) {
+				Looper.prepare();
+				EasyLogger.i("CollinWang", "Track请求失败回调接口消息：" + msg);
+				Looper.loop();
+			}
+
+			@Override
+			public void onQueryHistoryTrackCallback(String msg) {
+				super.onQueryHistoryTrackCallback(msg);
+			}
+		};
+	}
+	
     private void initOnStartTraceListener() {
         mStartTraceListener = new OnStartTraceListener() {
             public void onTraceCallback(int code, String msg) {
-            	EasyLogger.i("CollinWang", "开启轨迹服务回调接口消息[消息编码：" + code + "，消息内容：" + msg + "]" + Integer.valueOf(code));
+            	EasyLogger.i("CollinWang", "开启轨迹服务回调接口消息[消息setOnTrackListener编码：" + code + "，消息内容：" + msg + "]" + Integer.valueOf(code));
             }
 
             public void onTracePushCallback(byte code, String msg) {

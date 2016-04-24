@@ -255,7 +255,7 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
         mUMengImage = new UMImage(MainActivity.this, pictureUrl);
         //mUMengImage = new UMImage(MainActivity.this, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
 		new ShareAction(MainActivity.this).setDisplayList(mDisplayList)
-				.withText("飘奇工作室")
+				.withText(text.equals("") ? " " : text)
 				.withTitle(title)
 				.withTargetUrl(tatgetUrl)
 				.withMedia(mUMengImage)
@@ -462,8 +462,7 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 			break;
 		case EVENT_GET_WEIXIN_USERINFO_URL_SUCCESS:
 		case EVENT_GET_WEIXIN_USERINFO_URL_FAIL:
-			//final String data = (String)obj;
-			final Object data = obj;
+			final String data = (String)obj;
 			EasyLogger.i("CollinWang", "final LoginInfo=" + data);
 			runOnUiThread(new Runnable() {
 				@Override
