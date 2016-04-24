@@ -54,8 +54,6 @@ public class BaiduTraceUtil {
 		mClient.setInterval(mGatherInterval, mPackInterval);
 		// 请求协议
 		mClient.setProtocolType(0);
-		// 轨迹监听
-		initOnTrackListener();
 	}
 	
 	public void startTrace(Context context) {
@@ -114,6 +112,7 @@ public class BaiduTraceUtil {
 	}
 	
 	private void initListener() {
+		initOnTrackListener();
         initOnStartTraceListener();
         initOnStopTraceListener();
     }
