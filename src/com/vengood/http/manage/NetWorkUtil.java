@@ -109,25 +109,30 @@ public class NetWorkUtil {
         	WeiXinUserInfo userInfo = new WeiXinUserInfo();
         	Gson gson = new Gson();
             @Override
-            public void succeed(int statusCode, String content) {
-            	EasyLogger.i("NetWorkUtil", "getWeiXinUserInfo=" + content);
-                try {
-                    String code = "0";
-                    String errMsg = "请求成功";
-                    userInfo.setCode(code);
-                    userInfo.setErrMsg(errMsg);
-                    userInfo.setUser(content);
-                    listener.onUpdate(HttpEvent.EVENT_GET_WEIXIN_USERINFO_URL_SUCCESS, gson.toJson(userInfo));
-                } catch (Exception e) {
-                	String code = "-1";
-                    String errMsg = "请求失败=" + e.toString();
-                    userInfo.setCode(code);
-                    userInfo.setErrMsg(errMsg);
-                    userInfo.setUser(content);
-                    Log.e("NetWorkUtil", "getWeiXinUserInfo JsonCatch=", e);
-                    listener.onUpdate(HttpEvent.EVENT_GET_WEIXIN_USERINFO_URL_FAIL, gson.toJson(userInfo));
-                }
-            }
+			public void succeed(int statusCode, String content) {
+				try {
+					JSONObject jsonObject = new JSONObject(content);
+					EasyLogger.i("NetWorkUtil", "getWeiXinUserInfo=" + content);
+					try {
+						String code = "0";
+						String errMsg = "请求成功";
+						userInfo.setCode(code);
+						userInfo.setErrMsg(errMsg);
+						userInfo.setUser(jsonObject);
+						listener.onUpdate(HttpEvent.EVENT_GET_WEIXIN_USERINFO_URL_SUCCESS, gson.toJson(userInfo));
+					} catch (Exception e) {
+						String code = "-1";
+						String errMsg = "请求失败=" + e.toString();
+						userInfo.setCode(code);
+						userInfo.setErrMsg(errMsg);
+						userInfo.setUser(jsonObject);
+						Log.e("NetWorkUtil", "getWeiXinUserInfo JsonCatch=", e);
+						listener.onUpdate(HttpEvent.EVENT_GET_WEIXIN_USERINFO_URL_FAIL, gson.toJson(userInfo));
+					}
+				} catch (JSONException e1) {
+					e1.printStackTrace();
+				}
+			}
             
             @Override
             public void failed(Throwable error, String content) {

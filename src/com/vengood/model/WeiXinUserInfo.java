@@ -9,7 +9,7 @@ package com.vengood.model;
 public class WeiXinUserInfo {
 	private String code = null;
 	private String errMsg = null;
-	private String user = null;
+	private Object user = null;
 
 	public String getCode() {
 		return code;
@@ -27,11 +27,11 @@ public class WeiXinUserInfo {
 		this.errMsg = errMsg;
 	}
 
-	public String getUser() {
+	public Object getUser() {
 		return user;
 	}
 
-	public void setUser(String user) {
+	public void setUser(Object user) {
 		this.user = user;
 	}
 
