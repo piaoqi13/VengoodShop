@@ -9,6 +9,7 @@ import com.vengood.http.HttpEvent;
 import com.vengood.http.HttpParam;
 import com.vengood.http.HttpReqListener;
 import com.vengood.http.HttpUrl;
+import com.vengood.model.WeiXinInfo;
 import com.vengood.model.WeiXinUserInfo;
 import com.vengood.util.EasyLogger;
 
@@ -111,26 +112,26 @@ public class NetWorkUtil {
             @Override
 			public void succeed(int statusCode, String content) {
 				try {
-					JSONObject jsonObject = new JSONObject(content);
+					WeiXinInfo weiXinInfo = gson.fromJson(content, WeiXinInfo.class);
 					EasyLogger.i("NetWorkUtil", "getWeiXinUserInfo=" + content);
 					try {
 						String code = "0";
 						String errMsg = "请求成功";
 						userInfo.setCode(code);
 						userInfo.setErrMsg(errMsg);
-						userInfo.setUser(jsonObject);
+						userInfo.setUser(weiXinInfo);
 						listener.onUpdate(HttpEvent.EVENT_GET_WEIXIN_USERINFO_URL_SUCCESS, gson.toJson(userInfo));
 					} catch (Exception e) {
 						String code = "-1";
 						String errMsg = "请求失败=" + e.toString();
 						userInfo.setCode(code);
 						userInfo.setErrMsg(errMsg);
-						userInfo.setUser(jsonObject);
+						userInfo.setUser(null);
 						Log.e("NetWorkUtil", "getWeiXinUserInfo JsonCatch=", e);
 						listener.onUpdate(HttpEvent.EVENT_GET_WEIXIN_USERINFO_URL_FAIL, gson.toJson(userInfo));
 					}
-				} catch (JSONException e1) {
-					e1.printStackTrace();
+				} catch (Exception e1) {
+					EasyLogger.e("CollinWang", "Catch=", e1);
 				}
 			}
             
@@ -140,7 +141,7 @@ public class NetWorkUtil {
                 String errMsg = "请求失败=" + content;
                 userInfo.setCode(code);
                 userInfo.setErrMsg(errMsg);
-                userInfo.setUser("null");
+                userInfo.setUser(null);
                 listener.onUpdate(HttpEvent.EVENT_GET_WEIXIN_USERINFO_URL_FAIL, gson.toJson(userInfo));
             }
         });
