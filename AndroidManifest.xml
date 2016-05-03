@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.vengood"
-    android:versionCode="3"
+    android:versionCode="4"
     android:versionName="1.0.2" >
 
     <uses-sdk
@@ -46,17 +46,10 @@
         android:label="@string/app_name"
         android:theme="@android:style/Theme.Light.NoTitleBar" >
         <!-- 高德定位 -->
-        <meta-data
-            android:name="com.amap.api.v2.apikey" 
-            android:value="d9a3a833a33a8d727795c459f16067da" >
-        </meta-data>
+        <meta-data            android:name="com.amap.api.v2.apikey"             android:value="d9a3a833a33a8d727795c459f16067da" >        </meta-data>
         <!-- 百度定位 -->
-        <meta-data
-            android:name="api_key"
-            android:value="ymLTYv7QkzFW0yWdL7MH8kSVaocyVML6" />
-        <meta-data
-            android:name="com.baidu.lbsapi.API_KEY"
-            android:value="8IasSoGnqHwQHuh6bIUpGDKZ" />
+        <meta-data            android:name="api_key"            android:value="ymLTYv7QkzFW0yWdL7MH8kSVaocyVML6" />
+        <meta-data            android:name="com.baidu.lbsapi.API_KEY"            android:value="8IasSoGnqHwQHuh6bIUpGDKZ" />
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
@@ -68,9 +61,7 @@
             </intent-filter>
         </service>
         <!-- 百度鹰眼 -->
-        <meta-data
-            android:name="com.baidu.lbsapi.API_KEY"
-            android:value="ymLTYv7QkzFW0yWdL7MH8kSVaocyVML6" />
+        <meta-data            android:name="com.baidu.lbsapi.API_KEY"            android:value="ymLTYv7QkzFW0yWdL7MH8kSVaocyVML6" />
         <service
             android:name="com.baidu.trace.LBSTraceService"
             android:enabled="true"
@@ -78,19 +69,10 @@
             android:permission="oem.permission.SENDMAIL" >
         </service>
         <!-- 友盟统计 -->
-        <meta-data
-            android:name="UMENG_APPKEY" 
-            android:value="56872e2a67e58eba0a001235" >
-        </meta-data>
+        <meta-data            android:name="UMENG_APPKEY"             android:value="56872e2a67e58eba0a001235" >        </meta-data>
         <!-- 友盟推送 -->
-        <meta-data
-            android:name="UMENG_MESSAGE_SECRET"
-            android:value="3ca17257df665c665f12dd096a34e803" >
-        </meta-data>
-        <meta-data
-            android:name="UMENG_CHANNEL"
-            android:value="Umeng" >
-        </meta-data>
+        <meta-data            android:name="UMENG_MESSAGE_SECRET"            android:value="3ca17257df665c665f12dd096a34e803" >        </meta-data>
+        <meta-data            android:name="UMENG_CHANNEL"            android:value="Umeng" >        </meta-data>
         <!-- 友盟自动更新 -->
         <service
             android:name="com.umeng.update.net.DownloadingService"
