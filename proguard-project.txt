@@ -1,3 +1,106 @@
+-optimizationpasses 7
+-dontusemixedcaseclassnames
+-dontskipnonpubliclibraryclasses
+-dontpreverify
+-verbose
+-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
+
+-keep public class * extends android.app.Activity
+-keep public class * extends android.app.Application
+-keep public class * extends android.app.Service
+-keep public class * extends android.content.BroadcastReceiver
+-keep public class * extends android.content.ContentProvider
+-keep public class * extends android.app.backup.BackupAgentHelper
+-keep public class * extends android.preference.Preference
+-keep public class com.android.vending.licensing.ILicensingService
+
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+
+-keepclasseswithmembers class * {
+    public <init>(android.content.Context, android.util.AttributeSet);
+}
+
+-keepclasseswithmembers class * {
+    public <init>(android.content.Context, android.util.AttributeSet, int);
+}
+
+-keepclassmembers class * extends android.app.Activity { 
+    public void *(android.view.View);
+}
+
+-keep public class * extends android.view.View {
+    public <init>(android.content.Context);
+    public <init>(android.content.Context, android.util.AttributeSet);
+    public <init>(android.content.Context, android.util.AttributeSet, int);
+    public void set*(...);
+}
+
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
+-keep class * implements android.os.Parcelable {
+    public static final android.os.Parcelable$Creator *;
+}
+
+-keepnames class * implements java.io.Serializable
+
+-keepclassmembers class * implements java.io.Serializable {
+    static final long serialVersionUID;
+    private static final java.io.ObjectStreamField[] serialPersistentFields;
+    !static !transient <fields>;
+    private void writeObject(java.io.ObjectOutputStream);
+    private void readObject(java.io.ObjectInputStream);
+    java.lang.Object writeReplace();
+    java.lang.Object readResolve();
+}
+
+-keepattributes *Annotation*
+-keepattributes Exceptions,InnerClasses,Signature
+-keepattributes SourceFile,LineNumberTable
+
+-keep class **.R$* { *; }
+-libraryjars  libs/android-support-v4.jar
+-libraryjars  libs/alipaySdk-20160223.jar
+-libraryjars  libs/AMap_Location_V2.2.0.jar
+-libraryjars  libs/android-async-http-1.4.4.jar
+-libraryjars  libs/BaiduTraceSDK_v2_1_7.jar
+-libraryjars  libs/gson-2.2.4.jar
+-libraryjars  libs/libammsdk.jar
+-libraryjars  libs/locSDK_6.13.jar
+-libraryjars  libs/mta-sdk-1.6.2.jar
+-libraryjars  libs/open_sdk_r5509.jar
+-libraryjars  libs/SocialSDK_QQZone_3.jar
+-libraryjars  libs/SocialSDK_Sina.jar
+-libraryjars  libs/SocialSDK_WeiXin_2.jar
+-libraryjars  libs/umeng_social_sdk.jar
+-libraryjars  libs/umeng-analytics-v5.6.4.jar
+-libraryjars  libs/umeng-onlineconfig_v1.0.0.jar
+-libraryjars  libs/umeng-update-v2.6.0.1.jar
+-libraryjars  libs/weiboSDKCore_3.1.4.jar
+
+-dontwarn com.alipay.**
+-keep class com.alipay.** { *; }   
+-dontwarn com.loopj.android.http.**  
+-keep class com.loopj.android.http.** { *; }  
+-dontwarn com.google.gson.**  
+-dontwarn android.support.v4.**    
+-keep class android.support.v4.** { *; }  
+-keep interface android.support.v4.** { *; }
+-keep public class * extends android.support.v4.** 
+-keep public class * extends android.app.Fragment
+
+-keepclassmembers class * {
+   public <init> (org.json.JSONObject);
+}
+
+-keep public class [com.vengood].R$*{
+	public static final int *;
+}
+
 -dontshrink
 -dontoptimize
 -dontwarn com.google.android.maps.**
@@ -5,7 +108,6 @@
 -dontwarn com.umeng.**
 -dontwarn com.tencent.weibo.sdk.**
 -dontwarn com.facebook.**
-
 
 -keep enum com.facebook.**
 -keepattributes Exceptions,InnerClasses,Signature
@@ -64,11 +166,60 @@
 -keep class com.linkedin.** { *; }
 -keepattributes Signature
 
--libraryjars libs/alipaySDK-20150602.jar
- 
--keep class com.alipay.android.app.IAlixPay{*;}
--keep class com.alipay.android.app.IAlixPay$Stub{*;}
--keep class com.alipay.android.app.IRemoteServiceCallback{*;}
--keep class com.alipay.android.app.IRemoteServiceCallback$Stub{*;}
--keep class com.alipay.sdk.app.PayTask{ public *;}
--keep class com.alipay.sdk.app.AuthTask{ public *;}
+-dontwarn com.ut.mini.**
+-dontwarn okio.**
+-dontwarn com.xiaomi.**
+-dontwarn com.squareup.wire.**
+-dontwarn android.support.v4.**
+    
+-keepattributes *Annotation*
+    
+-keep class android.support.v4.** { *; }
+-keep interface android.support.v4.app.** { *; }
+    
+-keep class okio.** {*;}
+-keep class com.squareup.wire.** {*;}
+    
+-keep class com.umeng.message.protobuffer.* {
+	 public <fields>;
+         public <methods>;
+}
+	
+-keep class com.umeng.message.* {
+	 public <fields>;
+         public <methods>;
+}
+
+-keep class org.android.agoo.impl.* {
+	 public <fields>;
+         public <methods>;
+}
+
+-keep class org.android.agoo.service.* {*;}
+
+-keep class org.android.spdy.**{*;}
+
+-dontwarn org.apache.http.**
+-dontwarn android.webkit.**
+-keep class org.apache.http.** { *; }
+-keep class org.apache.commons.codec.** { *; }
+-keep class org.apache.commons.logging.** { *; }
+-keep class android.net.compatibility.** { *; }
+-keep class android.net.http.** { *; }
+
+-keep class com.loc.** { *; }
+-keep class com.amap.** { *; }
+-keep class com.autonavi.** { *; }
+
+-keep class com.baidu.** { *; }
+-keep class vi.com.gdi.bgl.android.**{*;}
+-keep class com.vengood.model.** { *; }
+
+-keep class **.Webview2JsInterface { *; }
+-keepclassmembers class * extends android.webkit.WebViewClient {   
+     public void *(android.webkit.WebView,java.lang.String,android.graphics.Bitmap);  
+     public boolean *(android.webkit.WebView,java.lang.String);  
+}
+-keepclassmembers class * extends android.webkit.WebChromeClient {  
+     public void *(android.webkit.WebView,java.lang.String);  
+}  
