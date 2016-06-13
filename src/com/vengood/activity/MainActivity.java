@@ -138,7 +138,7 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 		}
 		// 拿到在线参数
 		mIndexUrl = OnlineConfigAgent.getInstance().getConfigParams(mContext, "url");
-		mIndexUrl = "http://test.vengood.com/mobile.php?act=module&dzdid=0&name=bj_qmxk&do=list&weid=3";
+		//mIndexUrl = "http://test.vengood.com/mobile.php?act=module&dzdid=0&name=bj_qmxk&do=list&weid=3";
 		Log.i("CollinWang", "online param=" + mIndexUrl);
 		mIWXapi = WXAPIFactory.createWXAPI(this, null);
 		mIWXapi.registerApp(Constants.APP_ID);

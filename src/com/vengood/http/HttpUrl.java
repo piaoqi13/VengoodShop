@@ -7,8 +7,8 @@ package com.vengood.http;
  *作者：王超
  */
 public class HttpUrl {
-	//public static String Server_Uri = "http://v.vengood.com/";
-	public static String Server_Uri = "http://test.vengood.com/";
+	public static String Server_Uri = "http://v.vengood.com/";
+	//public static String Server_Uri = "http://test.vengood.com/";
 	public static String WeinXin_Uri = "https://api.weixin.qq.com/sns/";
 	public static String WeinXin_UserInfo_Uri = "userinfo";
     public static String Login_Url = "mobile.php";
