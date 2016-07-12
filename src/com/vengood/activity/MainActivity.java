@@ -26,7 +26,6 @@ import com.vengood.http.HttpEvent;
 import com.vengood.http.HttpReqListener;
 import com.vengood.http.manage.NetWorkUtil;
 import com.vengood.util.BaiduMapUtil;
-import com.vengood.util.BaiduTraceUtil;
 import com.vengood.util.Constants;
 import com.vengood.util.EasyLogger;
 import com.vengood.util.Settings;
@@ -131,11 +130,11 @@ public class MainActivity extends Activity implements OnClickListener, HttpReqLi
 		// 百度鹰眼走起
 		String is_trace = OnlineConfigAgent.getInstance().getConfigParams(mContext, "is_trace");
 		EasyLogger.i("CollinWang", "is_trace=" + is_trace);
-		if (is_trace.equals("true")) {
+		/*if (is_trace.equals("true")) {
 			BaiduTraceUtil.getInstance().startTrace(mContext);
 		} else if (is_trace.equals("false")) {
 			BaiduTraceUtil.getInstance().stopTrace(mContext);
-		}
+		}*/
 		// 拿到在线参数
 		mIndexUrl = OnlineConfigAgent.getInstance().getConfigParams(mContext, "url");
 		//mIndexUrl = "http://test.vengood.com/mobile.php?act=module&dzdid=0&name=bj_qmxk&do=list&weid=3";
